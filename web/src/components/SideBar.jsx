@@ -23,7 +23,7 @@ const SideBar = () => {
     { name: "Dashboard", icon: <FaHome />, path: "/dashboard" },
     { name: "Mis mascotas", icon: <PiDogFill />, path: "/dashboard"  },
     { name: "Salud", icon: <FaHeartbeat />, path: "/health"  },
-    { name: "Nutrition", icon: <FaCarrot />, path: "/dashboard"  },
+    { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition"  },
     { name: "Recordatorios", icon: <FaBell />, path: "/dashboard"  },
     { name: "Configuración", icon: <FaUser />, path: "/dashboard"  },
   ];

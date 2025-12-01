@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import LandingPage from "./pages/LandingPage";
 import HealthPage from "./pages/HealthPage";
 import MainPage from "./pages/MainPage";
+import NutritionSection from "../components/nutrition/NutritionSection";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route element={<MainPage />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/health" element={<HealthPage />} />
+          <Route path="/nutrition" element={<NutritionSection />} /> 
 
           {/* agregar rutas del usuario aca */}
         </Route>
