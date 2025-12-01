@@ -7,7 +7,7 @@ import Register from "./pages/Register";
 import LandingPage from "./pages/LandingPage";
 import HealthPage from "./pages/HealthPage";
 import MainPage from "./pages/MainPage";
-import NutritionSection from "../components/nutrition/NutritionSection";
+import NutritionSection from "./pages/NutritionSection";
 
 function App() {
   return (

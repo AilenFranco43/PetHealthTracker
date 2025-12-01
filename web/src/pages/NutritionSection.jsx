@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Apple, Plus } from 'lucide-react';
-import WeeklyStats from './WeeklyStats';
-import PetCard from './PetCard';
+import WeeklyStats from '../components/nutrition/WeeklyStats';
+import PetCard from '../components/nutrition/PetCard';
 
 export default function NutritionSection() {
   const [pets, setPets] = useState([
