@@ -11,21 +11,48 @@ import {
 } from "react-icons/fa";
 import { PiDogFill } from "react-icons/pi";
 import { FaCarrot } from "react-icons/fa6";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const SideBar = () => {
-  const [activeItem, setActiveItem] = useState("Dashboard");
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
 
+  // Función para determinar si un ítem está activo
+  const isActive = (path) => {
+    // Para la ruta de pets/:id
+    if (path === "/pets" && location.pathname.startsWith("/pets/")) {
+      return true;
+    }
+    return location.pathname === path;
+  };
 
-  //cambiar los paths cuando se creen las paginas correspondientes
+  // Función para obtener el nombre activo para mostrar
+  const getActiveName = () => {
+    // Mapeo de rutas a nombres
+    const routeToName = {
+      "/dashboard": "Dashboard",
+      "/pets": "Mis mascotas",
+      "/health": "Salud",
+      "/nutrition": "Nutrition",
+      "/reminders": "Recordatorios",
+      "/configuration": "Configuración",
+    };
+
+    // Para rutas como /pets/:id
+    if (location.pathname.startsWith("/pets/")) {
+      return "Mis mascotas";
+    }
+
+    return routeToName[location.pathname] || "";
+  };
+
   const navItems = [
     { name: "Dashboard", icon: <FaHome />, path: "/dashboard" },
-    { name: "Mis mascotas", icon: <PiDogFill />, path: "/pets"  },
-    { name: "Salud", icon: <FaHeartbeat />, path: "/health"  },
-    { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition"  },
-    { name: "Recordatorios", icon: <FaBell />, path: "/reminders"  },
-    { name: "Configuración", icon: <FaUser />, path: "/configuration"  },
+    { name: "Mis mascotas", icon: <PiDogFill />, path: "/pets" },
+    { name: "Salud", icon: <FaHeartbeat />, path: "/health" },
+    { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition" },
+    { name: "Recordatorios", icon: <FaBell />, path: "/reminders" },
+    { name: "Configuración", icon: <FaUser />, path: "/configuration" },
   ];
 
   const Logo = () => (
@@ -89,11 +116,11 @@ const SideBar = () => {
       {/* Contenedor del menu */}
       <div
         className={`
-    fixed top-0 left-0 h-screen z-50
-    w-64 bg-white border-r border-gray-100 flex flex-col p-4 shadow-sm
-    transition-transform duration-300 ease-in-out
-    ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
-`}
+          fixed top-0 left-0 h-screen z-50
+          w-64 bg-white border-r border-gray-100 flex flex-col p-4 shadow-sm
+          transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        `}
       >
         {/* Logo dentro del menu */}
         <div className="mb-8 px-2 border-b-2 pb-6 border-gray-100">
@@ -101,32 +128,34 @@ const SideBar = () => {
         </div>
 
         {/* Navegacion */}
-       <nav className="flex-1 space-y-2">
-  {navItems.map((item) => (
-    <Link
-      key={item.name}
-      to={item.path}
-      onClick={() => setActiveItem(item.name)}
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-        activeItem === item.name
-          ? "bg-cyan-50 text-teal-500 font-medium shadow-sm"
-          : "text-slate-600 hover:bg-gray-50 hover:text-slate-900"
-      }`}
-    >
-      <span
-        className={`text-lg ${
-          activeItem === item.name
-            ? "text-teal-500"
-            : "text-slate-400 group-hover:text-slate-600"
-        }`}
-      >
-        {item.icon}
-      </span>
-      <span>{item.name}</span>
-    </Link>
-  ))}
-</nav>
-
+        <nav className="flex-1 space-y-2">
+          {navItems.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <Link
+                key={item.name}
+                to={item.path}
+                onClick={() => setIsOpen(false)} // Cierra el menú en móvil al hacer clic
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
+                  active
+                    ? "bg-cyan-50 text-teal-500 font-medium shadow-sm"
+                    : "text-slate-600 hover:bg-gray-50 hover:text-slate-900"
+                }`}
+              >
+                <span
+                  className={`text-lg ${
+                    active
+                      ? "text-teal-500"
+                      : "text-slate-400 group-hover:text-slate-600"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
         {/* Seccion de cierre de sesion */}
         <div className="mt-4 pt-4 border-t-2 border-gray-100">
