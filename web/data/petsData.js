@@ -1,9 +1,12 @@
-// src/data/petsData.js
+import { Weight } from "lucide-react";
+
 export const petsData = [
   {
     id: "1",
     name: "Luna",
+    specie: "Perro",
     breed: "Golden Retriever",
+    weight: "20 kg",
     age: "3 años",
     image: "/dog-example.jpg",
     recentRecords: [
@@ -24,7 +27,9 @@ export const petsData = [
   {
     id: "2",
     name: "Milo",
+    specie: "Gato",
     breed: "Gato",
+    weight: "5 kg",
     age: "2 años",
     image: "/cat-example.jpg",
     recentRecords: [

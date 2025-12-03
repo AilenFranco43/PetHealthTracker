@@ -6,7 +6,7 @@ const AddPetBtn = ({ onClick }) => {
     <button
       onClick={onClick}
       className="
-        w-full border-2 border-dashed border-teal-500 rounded-2xl bg-teal-50 flex flex-col sm:flex-row gap-4 sm:gap-5 items-center justify-center sm:justify-start h-[130px] sm:h-[150px] cursor-pointer transition-transform hover:scale-[1.02] p-4 sm:pl-10"
+        w-full border-2 border-dashed border-teal-500 rounded-2xl bg-teal-50 flex flex-row gap-4 sm:gap-5 items-center justify-start h-[100px] sm:h-[120px] cursor-pointer transition-transform hover:scale-[1.02] p-4 pl-10"
     >
 
       <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
@@ -14,7 +14,7 @@ const AddPetBtn = ({ onClick }) => {
       </div>
 
   
-      <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+      <div className="flex flex-col items-start text-center sm:text-left">
         <h3 className="text-gray-900 text-base sm:text-lg lg:text-xl font-medium">
           Agregar nueva mascota
         </h3>
