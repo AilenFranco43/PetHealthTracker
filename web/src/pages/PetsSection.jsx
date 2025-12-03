@@ -4,7 +4,8 @@ import AddPetBtn from "../components/pets/AddPetBtn";
 import Modal from "../components/pets/Modal";
 import PetForm from "../components/pets/PetForm";
 import { Search } from "lucide-react";
-import PetProfile from "../components/pets/PetProfile"; // <-- asegúrate de importar el perfil
+import PetProfile from "../components/pets/PetProfile";
+import { petsData } from "../../data/petsData"; 
 
 const PetsSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,31 +30,15 @@ const PetsSection = () => {
     setProfileModalOpen(false);
   };
 
-  const pets = [
-    {
-      id: 1,
-      name: "Luna",
-      breed: "Golden Retriever",
-      age: "3 años",
-      image: "/dog-example.jpg",
-      species: "Perro",
-      weight: "25 kg",
-    },
-    {
-      id: 2,
-      name: "Milo",
-      breed: "Gato",
-      age: "2 años",
-      image: "/cat-example.jpg",
-      species: "Gato",
-      weight: "4 kg",
-    },
-  ];
+ 
+  const pets = petsData;
 
+  // Filtrado mejorado - actualizado para usar las propiedades correctas
   const filteredPets = pets.filter(
     (pet) =>
       pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pet.breed.toLowerCase().includes(searchQuery.toLowerCase())
+      (pet.breed && pet.breed.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (pet.specie && pet.specie.toLowerCase().includes(searchQuery.toLowerCase())) // Cambiado de species a specie
   );
 
   return (
@@ -71,7 +56,7 @@ const PetsSection = () => {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-200" />
             <input
               type="text"
-              placeholder="Buscar mascota..."
+              placeholder="Buscar por nombre, raza o especie..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="
@@ -79,6 +64,12 @@ const PetsSection = () => {
                 text-white placeholder:text-emerald-100 rounded-xl 
                 outline-none text-sm md:text-base"
             />
+            {/* Mostrar contador de resultados */}
+            {searchQuery && (
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-100 bg-emerald-600/30 px-2 py-1 rounded">
+                {filteredPets.length} resultado{filteredPets.length !== 1 ? 's' : ''}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -96,7 +87,23 @@ const PetsSection = () => {
 
       {/* PETS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-2 md:px-6 lg:px-10">
-        <PetList pets={filteredPets} onSelectPet={openPetProfile} />
+        {filteredPets.length > 0 ? (
+          <PetList pets={filteredPets} onSelectPet={openPetProfile} />
+        ) : (
+          <div className="col-span-full text-center py-12">
+            <div className="text-gray-500 mb-4">
+              <Search className="w-12 h-12 mx-auto text-gray-300" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-2">
+              {searchQuery ? "No se encontraron mascotas" : "No hay mascotas registradas"}
+            </h3>
+            <p className="text-gray-500">
+              {searchQuery
+                ? `No hay resultados para "${searchQuery}"`
+                : "Agrega tu primera mascota haciendo clic en el botón arriba"}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* MODAL PERFIL DE MASCOTA */}
