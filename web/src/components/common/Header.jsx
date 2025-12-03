@@ -8,7 +8,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold mb-2">Registros de Salud</h1>
-            <p className="text-blue-100">Historial médico completo</p>
+            <p className="text-blue-100 text-base lg:text-lg">Historial médico completo</p>
           </div>
           <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
             <Stethoscope className="w-8 h-8" />

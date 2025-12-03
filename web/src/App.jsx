@@ -1,6 +1,7 @@
 
 import "./index.css";
 
+import SettingsPage from "./pages/SettingsPage"
 import Dashboard from "./pages/Dashboard";
 import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
@@ -14,6 +15,7 @@ import PetProfilePage from "./pages/PetProfilePage.jsx";
 import Reminders from "./pages/Reminders.jsx"
 
 function App() {
+
   return (
     <>
       <Routes>
@@ -29,12 +31,10 @@ function App() {
           <Route path="/pets" element={<PetsSection />} />
           <Route path="/pets/:id" element={<PetProfilePage />} />
           <Route path="/reminders" element={<Reminders />} />
+          <Route path="/configuration" element={<SettingsPage />} />
 
-
-          {/* agregar rutas del usuario aca */}
         </Route>
       </Routes>
-
 
     </>
   );

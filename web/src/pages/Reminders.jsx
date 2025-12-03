@@ -77,11 +77,11 @@ const Reminders = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
-            <header className="bg-gradient-to-r from-orange-400 to-red-500 rounded-3xl p-6 pt-8 shadow-lg relative z-10">
+            <header className="bg-gradient-to-r from-orange-400 to-red-500 rounded-3xl text-white p-6 pt-8 shadow-lg relative z-10">
                 <div className="flex justify-between items-start mb-4">
                     <div>
-                        <h1 className="text-3xl font-bold text-white mb-1">Recordatorios</h1>
-                        <p className="text-orange-100 text-sm font-medium">Próximas citas y eventos</p>
+                        <h1 className="text-3xl lg:text-4xl font-bold mb-2">Recordatorios</h1>
+                        <p className="text-orange-100 text-base lg:text-lg">Próximas citas y eventos</p>
                     </div>
                     <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl shadow-sm">
                         <FaBell className="text-white text-xl" />

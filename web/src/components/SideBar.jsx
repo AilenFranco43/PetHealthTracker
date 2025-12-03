@@ -25,7 +25,7 @@ const SideBar = () => {
     { name: "Salud", icon: <FaHeartbeat />, path: "/health"  },
     { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition"  },
     { name: "Recordatorios", icon: <FaBell />, path: "/reminders"  },
-    { name: "Configuración", icon: <FaUser />, path: "/dashboard"  },
+    { name: "Configuración", icon: <FaUser />, path: "/configuration"  },
   ];
 
   const Logo = () => (
