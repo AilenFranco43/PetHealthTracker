@@ -21,7 +21,7 @@ const SideBar = () => {
   //cambiar los paths cuando se creen las paginas correspondientes
   const navItems = [
     { name: "Dashboard", icon: <FaHome />, path: "/dashboard" },
-    { name: "Mis mascotas", icon: <PiDogFill />, path: "/dashboard"  },
+    { name: "Mis mascotas", icon: <PiDogFill />, path: "/pets"  },
     { name: "Salud", icon: <FaHeartbeat />, path: "/health"  },
     { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition"  },
     { name: "Recordatorios", icon: <FaBell />, path: "/dashboard"  },

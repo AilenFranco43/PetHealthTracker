@@ -1,8 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const PetCard = ({ pet }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col transition-transform duration-300 ease-in-out hover:-translate-y-2 cursor-pointer">
+    <div
+      className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col transition-transform duration-300 ease-in-out hover:-translate-y-2 cursor-pointer"
+      onClick={() => navigate(`/pets/${pet.id}`)}
+    >
       <div className="h-48 w-full overflow-hidden">
         <img
           src={pet.image}
