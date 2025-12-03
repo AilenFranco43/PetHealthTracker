@@ -24,7 +24,7 @@ const SideBar = () => {
     { name: "Mis mascotas", icon: <PiDogFill />, path: "/pets"  },
     { name: "Salud", icon: <FaHeartbeat />, path: "/health"  },
     { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition"  },
-    { name: "Recordatorios", icon: <FaBell />, path: "/dashboard"  },
+    { name: "Recordatorios", icon: <FaBell />, path: "/reminders"  },
     { name: "Configuración", icon: <FaUser />, path: "/dashboard"  },
   ];
 

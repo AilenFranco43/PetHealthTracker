@@ -1,3 +1,4 @@
+
 import "./index.css";
 
 import Dashboard from "./pages/Dashboard";
@@ -10,6 +11,7 @@ import MainPage from "./pages/MainPage";
 import NutritionSection from "./pages/NutritionSection";
 import PetsSection from "./pages/PetsSection";
 import PetProfilePage from "./pages/PetProfilePage.jsx";
+import Reminders from "./pages/Reminders.jsx"
 
 function App() {
   return (
@@ -26,11 +28,14 @@ function App() {
           <Route path="/nutrition" element={<NutritionSection />} />
           <Route path="/pets" element={<PetsSection />} />
           <Route path="/pets/:id" element={<PetProfilePage />} />
+          <Route path="/reminders" element={<Reminders />} />
 
 
           {/* agregar rutas del usuario aca */}
         </Route>
       </Routes>
+
+
     </>
   );
 }
