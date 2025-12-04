@@ -1,5 +1,3 @@
-import { Weight } from "lucide-react";
-
 export const petsData = [
   {
     id: "1",

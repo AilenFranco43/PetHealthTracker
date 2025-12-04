@@ -45,4 +45,13 @@ export class CreateReminderDto {
     required: false,
   })
   is_completed?: boolean;
+
+
+
+   @ApiProperty({
+    description: 'Indica si el recordatorio es urgente',
+    example: false,
+    required: false,
+  })
+  is_urgent?: boolean;
 }
