@@ -147,22 +147,15 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
           <label className="font-medium mb-1">
             Especie <span className="text-red-500">*</span>
           </label>
-          <select
+          <input
+          type="text"
             name="specie"
             className="border p-3 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             value={form.specie}
             onChange={handleChange}
             required
           >
-            <option value="">Seleccionar especie</option>
-            <option value="Perro">Perro</option>
-            <option value="Gato">Gato</option>
-            <option value="Conejo">Conejo</option>
-            <option value="Ave">Ave</option>
-            <option value="Hamster">Hamster</option>
-            <option value="Pez">Pez</option>
-            <option value="Otro">Otro</option>
-          </select>
+          </input>
         </div>
 
         {/* RAZA */}
