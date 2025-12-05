@@ -16,12 +16,16 @@ export class CreateUserDto {
   email: string;
 
   @IsString()
-  @IsNotEmpty()
   @MinLength(6)
-  password: string;
+  @IsOptional()
+  password?: string;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  photoUrl?: string;
+  photo_url?: string;
+
+  @IsOptional()
+  @IsString()
+  provider?: string;
 }

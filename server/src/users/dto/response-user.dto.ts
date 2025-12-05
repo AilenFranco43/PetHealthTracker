@@ -9,5 +9,5 @@ export class UserResponseDto {
   @Expose()
   email: string;
   @Expose()
-  photoUrl?: string;
+  photo_url?: string;
 }

@@ -17,6 +17,8 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EmailService } from 'src/email/email.service';
 import { ConfigService } from '@nestjs/config';
+import { User } from '@prisma/client';
+import { CreateUserDto } from 'src/users/dto/create-user.dto'; // Esta importación está correcta
 
 @Injectable()
 export class AuthService {
@@ -36,6 +38,9 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    if (!user.password) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Credenciales inválidas');
@@ -216,4 +221,97 @@ export class AuthService {
     const hashPassword = await bcrypt.hash(password, 10);
     return hashPassword;
   }
+
+
+
+
+
+async validateUser(email: string, password: string): Promise<any> {
+  const serializedEmail = this.serializeEmail(email);
+  const user = await this.usersService.findByEmail(serializedEmail);
+
+  if (!user || !user.password) {
+    return null;
+  }
+
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  
+  if (!isPasswordValid) {
+    return null;
+  }
+
+  // No devolver la contraseña
+  const { password: _, ...result } = user;
+  return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+async googleLogin(
+  googleUser: any,
+  res: Response,
+): Promise<{
+  message: string;
+  user: { id: string; email: string; username: string };
+}> {
+  if (!googleUser) {
+    throw new UnauthorizedException('Google user not found');
+  }
+
+  // Buscar usuario existente - usa Prisma directamente para obtener User
+  let user = await this.prisma.user.findUnique({
+    where: { email: googleUser.email },
+  });
+
+  // Si no existe, crearlo
+  if (!user) {
+    const createUserDto: CreateUserDto = {
+      email: googleUser.email,
+      username: googleUser.username || googleUser.displayName || googleUser.email.split('@')[0],
+      provider: 'google',
+      photo_url: googleUser.picture,
+      password: undefined,
+    };
+
+    // Crea usando Prisma directamente
+
+    user = await this.prisma.user.create({
+      data: {
+        email: createUserDto.email,
+        username: createUserDto.username,
+        provider: createUserDto.provider,
+        photo_url: createUserDto.photo_url,
+        password: createUserDto.password,
+      },
+    });
+  }
+
+  // Generar tokens
+  const { accessToken, refreshToken } = this.generateTokens(user.id, user.email);
+  this.setAuthCookies(res, accessToken, refreshToken);
+
+  return {
+    message: 'Login con Google exitoso',
+    user: {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    },
+  };
+}
 }

@@ -4,8 +4,11 @@ import SideBar from "../components/SideBar";
 import MyPetsDashboard from "../components/MyPetsDashboard";
 import UpcomingEvents from "../components/UpcomingEvents";
 import QuickActions from "../components/QuickActions";
+import { useAuth } from "../hooks/useAuth";
 
 const Dashboard = () => {
+   const { user } = useAuth();
+
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gray-50">
 
@@ -21,7 +24,7 @@ const Dashboard = () => {
           {/* Título */}
           <div className="mb-6">
             <p className="font-poppins text-base text-white">
-              Hola, Usuario 👋
+              Hola, {user?.username || "Usuario"}👋
             </p>
             <h1 className="font-poppins text-3xl md:text-4xl font-bold text-white">
               Dashboard

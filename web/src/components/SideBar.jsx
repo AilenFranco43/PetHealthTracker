@@ -12,10 +12,17 @@ import {
 import { PiDogFill } from "react-icons/pi";
 import { FaCarrot } from "react-icons/fa6";
 import { Link, useLocation } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+
 
   // Función para determinar si un ítem está activo
   const isActive = (path) => {
@@ -159,7 +166,11 @@ const SideBar = () => {
 
         {/* Seccion de cierre de sesion */}
         <div className="mt-4 pt-4 border-t-2 border-gray-100">
-          <button className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors duration-200">
+          <button
+          onClick={() => {logout();
+            navigate("/login")
+          }}
+           className="w-full flex items-center gap-3 px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors duration-200">
             <FaSignOutAlt className="text-lg" />
             <span>Cerrar Sesión</span>
           </button>

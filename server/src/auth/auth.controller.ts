@@ -17,6 +17,9 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { GetUser } from './decorators/get-user.decorator';
+import { Req } from '@nestjs/common';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -75,5 +78,26 @@ export class AuthController {
   async resetPassword(@Body() dto: ResetPasswordDto) {
     return await this.authService.resetPassword(dto);
   }
+
+
+
+  // --- GOOGLE AUTH ---
+
+@Get('google')
+@UseGuards(GoogleAuthGuard)
+async googleAuth() {
+ 
+}
+
+@Get('google/callback')
+@UseGuards(GoogleAuthGuard)
+async googleAuthRedirect(@Req() req, @Res() res: Response) {
+
+  await this.authService.googleLogin(req.user, res);
+
+  // Redirige al frontend
+  res.redirect(`${process.env.FRONTEND_URL}/dashboard`);
+}
+
 }
 

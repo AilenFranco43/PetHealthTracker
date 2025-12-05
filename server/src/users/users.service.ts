@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/response-user.dto';
-import { User } from 'generated/prisma/client';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
