@@ -19,16 +19,19 @@ export class HealthRecordsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.healthRecordsService.findOne(+id);
+    return this.healthRecordsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHealthRecordDto: UpdateHealthRecordDto) {
-    return this.healthRecordsService.update(+id, updateHealthRecordDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateHealthRecordDto: UpdateHealthRecordDto,
+  ) {
+    return this.healthRecordsService.update(id, updateHealthRecordDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.healthRecordsService.remove(+id);
+    return this.healthRecordsService.remove(id);
   }
 }
