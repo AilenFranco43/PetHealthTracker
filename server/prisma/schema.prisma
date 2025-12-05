@@ -12,6 +12,7 @@ model User {
   username   String
   email      String   @unique
   password   String?
+  phone      Int?
   photo_url  String?
   provider   String?
   hashedRefreshToken    String?

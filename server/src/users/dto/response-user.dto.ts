@@ -10,4 +10,6 @@ export class UserResponseDto {
   email: string;
   @Expose()
   photo_url?: string;
+  @Expose()
+  phone?: string;
 }
