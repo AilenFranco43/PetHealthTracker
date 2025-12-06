@@ -1,40 +1,49 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Query, 
-  UseInterceptors, 
-  UploadedFiles,
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
+  UploadedFile,
   ParseFilePipe,
   MaxFileSizeValidator,
-  FileTypeValidator 
+  FileTypeValidator,
+  Req,
+  UnauthorizedException, // Añade esto
 } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { PetsService } from './pets.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
 import { ResponsePetDto } from './dto/response-pet.dto';
-import { ApiOkResponse, ApiCreatedResponse, ApiQuery, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiQuery,
+  ApiConsumes,
+  ApiBody,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
 
+@UseGuards(JwtAuthGuard)
 @Controller('pets')
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
-
-
 
   // --------------------- CREATE ---------------------
   @Post()
   @ApiConsumes('multipart/form-data')
   @ApiCreatedResponse({ type: ResponsePetDto })
-  @UseInterceptors(FilesInterceptor('photo_urls', 10))
-  @ApiBody({ type: CreatePetDto }) // ← Usa el DTO directamente
-  createWithImages(
+  @UseInterceptors(FileInterceptor('photo_url'))
+  @ApiBody({ type: CreatePetDto })
+  create(
     @Body() createPetDto: CreatePetDto,
-    @UploadedFiles(
+    @UploadedFile(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
@@ -43,17 +52,30 @@ export class PetsController {
         fileIsRequired: false,
       }),
     )
-    files: Express.Multer.File[],
+    file: Express.Multer.File,
+    @Req() req: any,
   ) {
-    return this.petsService.createWithImages(createPetDto, files || []);
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      console.error('ERROR: No se encontró userId en req.user');
+      throw new UnauthorizedException('Usuario no autenticado');
+    }
+
+    console.log('User ID from request:', userId);
+    return this.petsService.create(createPetDto, file, userId);
   }
 
   // --------------------- FIND ALL BY OWNER ---------------------
   @Get()
-  @ApiOkResponse({ type: ResponsePetDto, isArray: true })
-  @ApiQuery({ name: 'ownerId', required: true, type: String })
-  findAllByOwner(@Query('ownerId') ownerId: string) {
-    return this.petsService.findAllByUser(ownerId);
+  findAllByOwner(@Req() req: any) {
+    const userId = req.user?.userId;
+
+    if (!userId) {
+      throw new UnauthorizedException('Usuario no autenticado');
+    }
+
+    return this.petsService.findAllByUser(userId);
   }
 
   // --------------------- FIND ONE ---------------------
@@ -63,17 +85,16 @@ export class PetsController {
     return this.petsService.findOne(id);
   }
 
-
   // --------------------- UPDATE ---------------------
-  @Patch(':id/')
+  @Patch(':id')
   @ApiConsumes('multipart/form-data')
   @ApiOkResponse({ type: ResponsePetDto })
-  @UseInterceptors(FilesInterceptor('photo_urls', 10))
+  @UseInterceptors(FileInterceptor('photo_url'))
   @ApiBody({ type: UpdatePetDto })
-  updateWithImages(
+  update(
     @Param('id') id: string,
     @Body() updatePetDto: UpdatePetDto,
-    @UploadedFiles(
+    @UploadedFile(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
@@ -82,30 +103,9 @@ export class PetsController {
         fileIsRequired: false,
       }),
     )
-    files: Express.Multer.File[],
+    file?: Express.Multer.File,
   ) {
-    return this.petsService.updateWithImages(id, updatePetDto, files || []);
-  }
-
-  // --------------------- ADD IMAGES ---------------------
-  @Post(':id/images')
-  @ApiConsumes('multipart/form-data')
-  @ApiOkResponse({ type: ResponsePetDto })
-  @UseInterceptors(FilesInterceptor('images', 10))
-  addImages(
-    @Param('id') id: string,
-    @UploadedFiles(
-      new ParseFilePipe({
-        validators: [
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg|webp)' }),
-        ],
-        fileIsRequired: true,
-      }),
-    )
-    files: Express.Multer.File[],
-  ) {
-    return this.petsService.addImages(id, files);
+    return this.petsService.updateWithImages(id, updatePetDto, file);
   }
 
   // --------------------- DELETE ---------------------

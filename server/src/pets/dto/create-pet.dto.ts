@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsUUID, IsArray, IsUrl, Min, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsUUID, IsUrl, Min, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePetDto {
@@ -46,19 +46,13 @@ export class CreatePetDto {
   breed?: string;
 
   @ApiProperty({
-    description: 'Lista de URLs de fotos de la mascota',
-    example: ['https://misfotos.com/luna1.jpg'],
+    description: 'URL de foto de la mascota',
+    example: 'https://misfotos.com/luna1.jpg',
     required: false,
   })
   @IsOptional()
-  @IsArray()
-  @IsUrl({}, { each: true })
-  photo_urls?: string[];
+  @IsUrl()
+  photo_url?: string;
 
-  @ApiProperty({
-    description: 'ID del usuario dueño de la mascota',
-    example: '8b3e1a49-3f3b-452a-a374-4ccc99af4a13',
-  })
-  @IsUUID()
-  owner_id: string;
+
 }

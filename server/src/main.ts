@@ -23,6 +23,9 @@ async function bootstrap() {
       whitelist: true, // Remueve propiedades que no están en el DTO
       forbidNonWhitelisted: true, // Lanza error si hay propiedades no permitidas
       transform: true, // Transforma los datos a los tipos especificados
+      transformOptions: {
+        enableImplicitConversion: true, // <-- necesario para IsNumber
+      },
     }),
   );
 

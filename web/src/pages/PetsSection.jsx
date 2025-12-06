@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PetList from "../components/pets/PetList";
 import AddPetBtn from "../components/pets/AddPetBtn";
 import Modal from "../components/pets/Modal";
 import PetForm from "../components/pets/PetForm";
 import { Search } from "lucide-react";
 import PetProfile from "../components/pets/PetProfile";
-import { petsData } from "../../data/petsData"; 
+import SkeletonPetCard from "../components/pets/SkeletonPetCard";
+
+import { usePets } from "../hooks/usePets";
+import { useAuth } from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const PetsSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { pets, getPets, loading, createPet } = usePets();
+  const { user } = useAuth();
 
   // Modal para crear mascota
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -20,6 +26,10 @@ const PetsSection = () => {
   const openCreateModal = () => setCreateModalOpen(true);
   const closeCreateModal = () => setCreateModalOpen(false);
 
+  useEffect(() => {
+    getPets();
+  }, []);
+
   const openPetProfile = (pet) => {
     setSelectedPet(pet);
     setProfileModalOpen(true);
@@ -30,20 +40,35 @@ const PetsSection = () => {
     setProfileModalOpen(false);
   };
 
- 
-  const pets = petsData;
+  const handleCreatePet = async (formData) => {
+    if (!user) {
+      toast.error("Debes estar logueado");
+      return;
+    }
 
-  // Filtrado mejorado - actualizado para usar las propiedades correctas
+    const loadingToast = toast.loading("Creando mascota...");
+
+    try {
+      await createPet(formData);
+      closeCreateModal();
+      toast.dismiss(loadingToast);
+      toast.success("Mascota creada exitosamente");
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error("Error al crear mascota");
+    }
+  };
+
+  // Filtrado
   const filteredPets = pets.filter(
     (pet) =>
-      pet.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (pet.breed && pet.breed.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (pet.specie && pet.specie.toLowerCase().includes(searchQuery.toLowerCase())) // Cambiado de species a specie
+      pet.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pet.breed?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      pet.specie?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
-      
       {/* HEADER */}
       <div className="mb-6 text-white bg-gradient-to-br from-emerald-500 to-teal-600 p-4 md:p-6 lg:p-8 rounded-2xl lg:rounded-3xl">
         <div className="flex flex-col gap-4">
@@ -64,10 +89,10 @@ const PetsSection = () => {
                 text-white placeholder:text-emerald-100 rounded-xl 
                 outline-none text-sm md:text-base"
             />
-            {/* Mostrar contador de resultados */}
             {searchQuery && (
               <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-100 bg-emerald-600/30 px-2 py-1 rounded">
-                {filteredPets.length} resultado{filteredPets.length !== 1 ? 's' : ''}
+                {filteredPets.length} resultado
+                {filteredPets.length !== 1 ? "s" : ""}
               </div>
             )}
           </div>
@@ -81,13 +106,16 @@ const PetsSection = () => {
         {/* MODAL CREAR MASCOTA */}
         <Modal open={createModalOpen} onClose={closeCreateModal}>
           <h2 className="text-lg md:text-xl font-bold mb-4">Agregar Mascota</h2>
-          <PetForm onSave={closeCreateModal} onCancel={closeCreateModal} />
+          <PetForm onSave={handleCreatePet} onCancel={closeCreateModal} />
         </Modal>
       </div>
 
       {/* PETS GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-2 md:px-6 lg:px-10">
-        {filteredPets.length > 0 ? (
+        {loading ? (
+          // Mostrar skeletons mientras carga
+          Array.from({ length: 6 }).map((_, i) => <SkeletonPetCard key={i} />)
+        ) : filteredPets.length > 0 ? (
           <PetList pets={filteredPets} onSelectPet={openPetProfile} />
         ) : (
           <div className="col-span-full text-center py-12">
@@ -95,7 +123,9 @@ const PetsSection = () => {
               <Search className="w-12 h-12 mx-auto text-gray-300" />
             </div>
             <h3 className="text-lg font-semibold text-gray-700 mb-2">
-              {searchQuery ? "No se encontraron mascotas" : "No hay mascotas registradas"}
+              {searchQuery
+                ? "No se encontraron mascotas"
+                : "No hay mascotas registradas"}
             </h3>
             <p className="text-gray-500">
               {searchQuery

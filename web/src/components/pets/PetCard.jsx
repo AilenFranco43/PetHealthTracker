@@ -11,7 +11,7 @@ const PetCard = ({ pet }) => {
     >
       <div className="h-48 w-full overflow-hidden">
         <img
-          src={pet.image}
+          src={pet.photo_url}
           alt={pet.name}
           className="w-full h-full object-cover object-top"
         />

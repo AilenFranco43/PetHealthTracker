@@ -33,7 +33,7 @@ model Pet {
   weight            Float?
   specie            String
   breed             String?
-  photo_urls        String[]
+  photo_url         String?
   owner_id          String
   created_at        DateTime          @default(now())
   updated_at        DateTime          @updatedAt

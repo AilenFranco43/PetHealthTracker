@@ -6,26 +6,32 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Injectable()
 export class PetsService {
-
-  constructor(private readonly prisma: PrismaService,
-              private readonly cloudinaryService: CloudinaryService,
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
+  // ------------------- CREATE  -------------------
+  async create(
+    createPetDto: CreatePetDto,
+    file: Express.Multer.File,
+    userId: string,
+  ) {
+    let photo_url: string | null = null;
 
-
-   // ------------------- CREATE  -------------------
-  async createWithImages(createPetDto: CreatePetDto, files: Express.Multer.File[]) {
-    let photo_urls: string[] = [];
-
-    // Subir imágenes a Cloudinary si hay archivos
-    if (files && files.length > 0) {
-      photo_urls = await this.cloudinaryService.uploadMultipleImages(files, 'pets');
+    if (file) {
+      console.log('Subiendo imagen a Cloudinary...');
+      photo_url = await this.cloudinaryService.uploadImage(file, 'pets');
+      console.log('Imagen subida:', photo_url);
     }
+
+    console.log('Creando pet en BD con owner_id:', userId);
 
     return await this.prisma.pet.create({
       data: {
         ...createPetDto,
-        photo_urls, // Usar las URLs de Cloudinary
+        photo_url,
+        owner_id: userId,
       },
     });
   }
@@ -60,38 +66,24 @@ export class PetsService {
     return pet;
   }
 
-
-
   // ---------------------- UPDATE WITH IMAGES ----------------------
-  async updateWithImages(id: string, updatePetDto: UpdatePetDto, files: Express.Multer.File[]) {
-    let photo_urls: string[] = [];
+  async updateWithImages(
+    id: string,
+    updatePetDto: UpdatePetDto,
+    file?: Express.Multer.File,
+  ) {
+    let photo_url: string | undefined;
 
-    // Subir nuevas imágenes a Cloudinary
-    if (files && files.length > 0) {
-      photo_urls = await this.cloudinaryService.uploadMultipleImages(files, 'pets');
+    // Si se envía una nueva imagen, subirla a Cloudinary
+    if (file) {
+      photo_url = await this.cloudinaryService.uploadImage(file, 'pets');
     }
 
     return await this.prisma.pet.update({
       where: { id },
       data: {
         ...updatePetDto,
-        ...(files.length > 0 && { photo_urls }), // Solo actualiza si hay nuevas imágenes
-      },
-    });
-  }
-
-  // ---------------------- ADD IMAGES TO PET ----------------------
-  async addImages(id: string, files: Express.Multer.File[]) {
-    const pet = await this.findOne(id);
-    
-    // Subir nuevas imágenes
-    const newPhotoUrls = await this.cloudinaryService.uploadMultipleImages(files, 'pets');
-    
-    // Combinar imágenes existentes con las nuevas
-    return await this.prisma.pet.update({
-      where: { id },
-      data: {
-        photo_urls: [...pet.photo_urls, ...newPhotoUrls],
+        ...(photo_url && { photo_url }), // Solo actualiza si hay nueva imagen
       },
     });
   }

@@ -1,19 +1,24 @@
-// components/pets/PetForm.jsx
 import { useState, useEffect } from "react";
 
-const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
-  // Inicializar el estado
+const PetForm = ({
+  pet,
+  onSave,
+  onCancel,
+  mode = "create",
+  loading = false,
+}) => {
   const [form, setForm] = useState({
     name: "",
     specie: "",
     breed: "",
     age: "",
     weight: "",
-    photo: null,
-    photo_url: "",
+    photo_url: "", // preview o URL existente
+    file: null, // archivo real
   });
 
-  // Efecto para cargar datos cuando el pet cambia
+  const [hasChanges, setHasChanges] = useState(false);
+
   useEffect(() => {
     if (pet) {
       setForm({
@@ -22,23 +27,26 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
         breed: pet.breed || "",
         age: pet.age || "",
         weight: pet.weight ? pet.weight.toString() : "",
-        photo: null,
-        photo_url: pet.image || pet.photo_url || "", // Usar image o photo_url
+        photo_url: pet.photo_url || "",
+        file: null,
       });
+      setHasChanges(false);
     }
   }, [pet]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    if (name === "photo") {
+    // Manejo del archivo
+    if (name === "photo_url") {
       const file = files[0];
       if (file) {
         setForm({
           ...form,
-          photo: file,
+          file,
           photo_url: URL.createObjectURL(file),
         });
+        setHasChanges(true);
       }
       return;
     }
@@ -47,19 +55,42 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
       ...form,
       [name]: value,
     });
+    setHasChanges(true);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(form);
+
+    const formData = new FormData();
+
+    formData.append("name", form.name);
+    formData.append("specie", form.specie);
+
+    // Enviar siempre, aunque estén vacíos (para que el backend los reciba)
+    formData.append("breed", form.breed || "");
+    formData.append("age", form.age || "");
+
+    // Convertir weight a número
+    if (form.weight) {
+      formData.append("weight", parseFloat(form.weight));
+    } else {
+      formData.append("weight", "");
+    }
+
+    if (form.file instanceof File) {
+      formData.append("photo_url", form.file);
+    }
+
+    onSave(formData, mode);
   };
 
   const removePhoto = () => {
     setForm({
       ...form,
-      photo: null,
       photo_url: "",
+      file: null,
     });
+    setHasChanges(true);
   };
 
   return (
@@ -75,12 +106,7 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
 
         <label
           htmlFor="photo-upload"
-          className="
-            w-24 h-24 sm:w-28 sm:h-28 
-            rounded-full bg-gray-100 flex items-center justify-center 
-            overflow-hidden cursor-pointer border-2 border-dashed border-gray-300
-            hover:border-teal-400 transition-colors relative
-          "
+          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden cursor-pointer border-2 border-dashed border-gray-300 hover:border-teal-400 transition-colors relative"
         >
           {form.photo_url ? (
             <>
@@ -109,11 +135,11 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
           id="photo-upload"
           type="file"
           accept="image/*"
-          name="photo"
+          name="photo_url"
           className="hidden"
           onChange={handleChange}
         />
-        
+
         {form.photo_url && (
           <button
             type="button"
@@ -127,73 +153,60 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
 
       {/* CAMPOS */}
       <div className="space-y-4">
-        {/* NOMBRE */}
         <div className="flex flex-col">
-          <label className="font-medium mb-1">
-            Nombre <span className="text-red-500">*</span>
-          </label>
+          <label className="font-medium mb-1">Nombre *</label>
           <input
             name="name"
             placeholder="Ej: Luna"
-            className="border p-3 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            className="border p-3 rounded-lg"
             value={form.name}
             onChange={handleChange}
             required
           />
         </div>
 
-        {/* ESPECIE */}
         <div className="flex flex-col">
-          <label className="font-medium mb-1">
-            Especie <span className="text-red-500">*</span>
-          </label>
+          <label className="font-medium mb-1">Especie *</label>
           <input
-          type="text"
+            type="text"
             name="specie"
-            className="border p-3 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            className="border p-3 rounded-lg"
             value={form.specie}
             onChange={handleChange}
             required
-          >
-          </input>
+          />
         </div>
 
-        {/* RAZA */}
         <div className="flex flex-col">
           <label className="font-medium mb-1">Raza</label>
           <input
             name="breed"
-            placeholder="Ej: Golden Retriever"
-            className="border p-3 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            className="border p-3 rounded-lg"
             value={form.breed}
             onChange={handleChange}
           />
         </div>
 
-        {/* EDAD */}
         <div className="flex flex-col">
           <label className="font-medium mb-1">Edad</label>
           <input
             name="age"
-            placeholder="Ej: 2 años, 6 meses"
-            className="border p-3 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            className="border p-3 rounded-lg"
             value={form.age}
             onChange={handleChange}
           />
         </div>
 
-        {/* PESO */}
         <div className="flex flex-col">
           <label className="font-medium mb-1">Peso (kg)</label>
           <input
             type="number"
             name="weight"
-            className="border p-3 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
+            className="border p-3 rounded-lg"
             value={form.weight}
             onChange={handleChange}
             min="0"
             step="0.1"
-            placeholder="Ej: 5.2"
           />
         </div>
       </div>
@@ -204,14 +217,25 @@ const PetForm = ({ pet, onSave, onCancel, mode = "create" }) => {
           type="button"
           onClick={onCancel}
           className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
+          disabled={loading}
         >
           Cancelar
         </button>
         <button
           type="submit"
-          className="flex-1 px-4 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-medium"
+          className="flex-1 px-4 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={loading || (mode === "edit" && !hasChanges)}
         >
-          {mode === "create" ? "Agregar mascota" : "Guardar cambios"}
+          {loading ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+              {mode === "create" ? "Creando..." : "Guardando..."}
+            </span>
+          ) : mode === "create" ? (
+            "Agregar mascota"
+          ) : (
+            "Guardar cambios"
+          )}
         </button>
       </div>
     </form>
