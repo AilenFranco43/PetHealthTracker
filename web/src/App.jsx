@@ -20,7 +20,16 @@ import { Toaster } from "react-hot-toast";
 function PrivateRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
 
-  if (loading) return <p>Cargando...</p>;
+  if (loading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white/80 z-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm text-gray-600">Verificando sesión...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!user) return <Navigate to="/login" replace />;
 
