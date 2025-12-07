@@ -6,13 +6,16 @@ import { Express } from 'express';
 export class CloudinaryService {
   constructor(@Inject('CLOUDINARY') private readonly cloudinary) {}
 
-  // Subir una sola imagen
-  async uploadImage(file: Express.Multer.File, folder: string = 'pets'): Promise<string> {
+  // Método único para subir cualquier tipo de archivo
+  async uploadFile(file: Express.Multer.File, folder: string = 'documents'): Promise<string> {
     return new Promise((resolve, reject) => {
+      const resourceType = this.getResourceType(file.mimetype);
+      
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: `petcare/${folder}`,
-          resource_type: 'image',
+          resource_type: resourceType,
+          allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'],
         },
         (error: UploadApiErrorResponse, result: UploadApiResponse) => {
           if (error) {
@@ -27,31 +30,33 @@ export class CloudinaryService {
     });
   }
 
-  // Subir muchas imágenes
-  async uploadMultipleImages(files: Express.Multer.File[], folder: string = 'pets'): Promise<string[]> {
-    const uploadPromises = files.map(file => this.uploadImage(file, folder));
+  // Subir múltiples archivos
+  async uploadMultipleFiles(files: Express.Multer.File[], folder: string = 'documents'): Promise<string[]> {
+    const uploadPromises = files.map(file => this.uploadFile(file, folder));
     return Promise.all(uploadPromises);
   }
 
-  // Subir PDF o documento
-  async uploadDocument(file: Express.Multer.File, folder: string = 'documents'): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: `petcare/${folder}`,
-          resource_type: 'auto', // Detecta automáticamente el tipo
-        },
-        (error: UploadApiErrorResponse, result: UploadApiResponse) => {
-          if (error) {
-            reject(new Error(`Error uploading document: ${error.message}`));
-          } else {
-            resolve(result.secure_url);
-          }
-        },
-      );
+  // Métodos de conveniencia para mantener compatibilidad
+  async uploadImage(file: Express.Multer.File, folder: string = 'pets'): Promise<string> {
+    return this.uploadFile(file, folder);
+  }
 
-      uploadStream.end(file.buffer);
-    });
+  async uploadMultipleImages(files: Express.Multer.File[], folder: string = 'pets'): Promise<string[]> {
+    return this.uploadMultipleFiles(files, folder);
+  }
+
+  async uploadDocument(file: Express.Multer.File, folder: string = 'documents'): Promise<string> {
+    return this.uploadFile(file, folder);
+  }
+
+  // Eliminar múltiples archivos
+  async deleteFiles(urls: string[]): Promise<void> {
+    try {
+      const deletePromises = urls.map(url => this.deleteFile(url));
+      await Promise.all(deletePromises);
+    } catch (error) {
+      throw new Error(`Error deleting files: ${error.message}`);
+    }
   }
 
   // Eliminar archivo por URL
@@ -65,6 +70,16 @@ export class CloudinaryService {
     } catch (error) {
       throw new Error(`Error deleting file: ${error.message}`);
     }
+  }
+
+  // Determinar el tipo de recurso basado en el mimetype
+  private getResourceType(mimetype: string): 'image' | 'raw' | 'auto' | 'video' {
+    if (mimetype.startsWith('image/')) {
+      return 'image';
+    } else if (mimetype.includes('pdf') || mimetype.includes('document') || mimetype.includes('msword')) {
+      return 'raw';
+    }
+    return 'auto';
   }
 
   // Extraer public_id de la URL de Cloudinary

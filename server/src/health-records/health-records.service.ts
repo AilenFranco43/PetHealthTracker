@@ -1,54 +1,74 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateHealthRecordDto } from './dto/create-health-record.dto';
 import { UpdateHealthRecordDto } from './dto/update-health-record.dto';
 import { HealthRecordType } from '@prisma/client';
 
 @Injectable()
 export class HealthRecordsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
-async create(createHealthRecordDto: CreateHealthRecordDto) {
+  async create(createHealthRecordDto: CreateHealthRecordDto, files?: Express.Multer.File[]) {
+    let documentUrls: string[] = [];
 
-  const healthRecord = await this.prisma.healthRecord.create({
-    data: {
-      ...createHealthRecordDto,
-      first_date: createHealthRecordDto.first_date
-        ? new Date(createHealthRecordDto.first_date)
-        : undefined,
-      second_date: createHealthRecordDto.second_date
-        ? new Date(createHealthRecordDto.second_date)
-        : undefined,
-    },
-  });
+    // Subir archivos a Cloudinary si existen
+    if (files && files.length > 0) {
+      documentUrls = await this.cloudinaryService.uploadMultipleFiles(files, 'health-records');
+    }
 
+    // Si hay URLs proporcionadas directamente en el DTO, agregarlas
+    if (createHealthRecordDto.document_urls && createHealthRecordDto.document_urls.length > 0) {
+      documentUrls = [...documentUrls, ...createHealthRecordDto.document_urls];
+    }
 
-  const typeMap: Record<HealthRecordType, 'VACUNA' | 'TRATAMIENTO' | 'VISITA'> = {
-    VACUNA: 'VACUNA',
-    CHEQUEO: 'VISITA',
-    TRATAMIENTO: 'TRATAMIENTO',
-  };
+    // Preparar fechas
+    const firstDate = createHealthRecordDto.first_date 
+      ? new Date(createHealthRecordDto.first_date)
+      : undefined;
+    
+    const secondDate = createHealthRecordDto.second_date
+      ? new Date(createHealthRecordDto.second_date)
+      : undefined;
 
-  const reminderType = typeMap[createHealthRecordDto.type];
+    // Crear el registro de salud
+    const healthRecord = await this.prisma.healthRecord.create({
+      data: {
+        pet_id: createHealthRecordDto.pet_id,
+        type: createHealthRecordDto.type,
+        description: createHealthRecordDto.description,
+        vet_name: createHealthRecordDto.vet_name,
+        first_date: firstDate,
+        second_date: secondDate,
+        document_urls: documentUrls,
+      },
+    });
 
-  
-  await this.prisma.reminder.create({
-    data: {
-      pet_id: createHealthRecordDto.pet_id,
-      title: `Recordatorio: ${createHealthRecordDto.type}`,
-      type: reminderType,
-      date: createHealthRecordDto.first_date
-        ? new Date(createHealthRecordDto.first_date)
-        : new Date(),
-      is_completed: false,
-      is_urgent: false,
-    },
-  });
+    // Crear recordatorio automático
+    const typeMap: Record<HealthRecordType, 'VACUNA' | 'TRATAMIENTO' | 'VISITA'> = {
+      VACUNA: 'VACUNA',
+      CHEQUEO: 'VISITA',
+      TRATAMIENTO: 'TRATAMIENTO',
+    };
 
-  return healthRecord;
-}
+    const reminderType = typeMap[createHealthRecordDto.type];
 
+    await this.prisma.reminder.create({
+      data: {
+        pet_id: createHealthRecordDto.pet_id,
+        title: `Recordatorio: ${createHealthRecordDto.type}`,
+        type: reminderType,
+        date: firstDate || new Date(),
+        is_completed: false,
+        is_urgent: false,
+      },
+    });
 
+    return healthRecord;
+  }
 
   async findAll() {
     return await this.prisma.healthRecord.findMany({
@@ -68,18 +88,56 @@ async create(createHealthRecordDto: CreateHealthRecordDto) {
     return record;
   }
 
-  async update(id: string, updateHealthRecordDto: UpdateHealthRecordDto) {
-    const record = await this.prisma.healthRecord.findUnique({
-      where: { id },
-    });
+  async update(
+    id: string,
+    updateHealthRecordDto: UpdateHealthRecordDto,
+    files?: Express.Multer.File[],
+  ) {
+    const record = await this.prisma.healthRecord.findUnique({ where: { id } });
+    if (!record) throw new NotFoundException('Health record not found');
 
-    if (!record) {
-      throw new NotFoundException('Health record not found');
+    let documentUrls = record.document_urls || [];
+
+    // Subir nuevos archivos si existen
+    if (files && files.length > 0) {
+      const uploadedUrls = await this.cloudinaryService.uploadMultipleFiles(files, 'health-records');
+      documentUrls = [...documentUrls, ...uploadedUrls];
     }
+
+    // Si se proporcionan nuevas URLs en el DTO, reemplazar completamente
+    if (updateHealthRecordDto.document_urls !== undefined) {
+      documentUrls = updateHealthRecordDto.document_urls;
+    }
+
+    // Preparar fechas para actualización
+    const data: any = {
+      ...updateHealthRecordDto,
+      document_urls: documentUrls,
+    };
+
+    // Solo actualizar fechas si se proporcionan
+    if (updateHealthRecordDto.first_date !== undefined) {
+      data.first_date = updateHealthRecordDto.first_date 
+        ? new Date(updateHealthRecordDto.first_date)
+        : null;
+    }
+
+    if (updateHealthRecordDto.second_date !== undefined) {
+      data.second_date = updateHealthRecordDto.second_date
+        ? new Date(updateHealthRecordDto.second_date)
+        : null;
+    }
+
+    // Eliminar propiedades undefined para no sobreescribir con null
+    Object.keys(data).forEach(key => {
+      if (data[key] === undefined) {
+        delete data[key];
+      }
+    });
 
     return await this.prisma.healthRecord.update({
       where: { id },
-      data: updateHealthRecordDto,
+      data,
     });
   }
 
@@ -90,6 +148,16 @@ async create(createHealthRecordDto: CreateHealthRecordDto) {
 
     if (!record) {
       throw new NotFoundException('Health record not found');
+    }
+
+    // Eliminar archivos de Cloudinary si existen
+    if (record.document_urls && record.document_urls.length > 0) {
+      try {
+        await this.cloudinaryService.deleteFiles(record.document_urls);
+      } catch (error) {
+        console.error('Error deleting files from Cloudinary:', error);
+        // Continuar con la eliminación del registro aunque falle la eliminación de archivos
+      }
     }
 
     return await this.prisma.healthRecord.delete({
