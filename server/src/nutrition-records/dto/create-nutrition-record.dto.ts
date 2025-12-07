@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsInt, IsUUID, Min, Max, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsInt, IsUUID, Min, Max, MaxLength, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateNutritionRecordDto {
@@ -56,4 +56,9 @@ export class CreateNutritionRecordDto {
     @IsString()
     @MaxLength(500)
     notes?: string;
+
+    @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  meal_times?: string[];
 }

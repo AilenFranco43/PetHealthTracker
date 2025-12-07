@@ -182,7 +182,7 @@ export class AuthService {
     const payload = { sub: userId, email };
     const accessToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_SECRET'),
-      expiresIn: '15m', // 15 minutos para access token
+      expiresIn: '2h', // para access token
     });
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
@@ -202,7 +202,7 @@ export class AuthService {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      maxAge: 15 * 60 * 1000, // 15 minutos
+      maxAge: 2 * 60 * 60 * 1000, // 2 horas
     });
 
     res.cookie('refresh_token', refreshToken, {

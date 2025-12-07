@@ -7,21 +7,53 @@ import { UpdateReminderDto } from './dto/update-reminder.dto';
 export class RemindersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createReminderDto: CreateReminderDto) {
-    return await this.prisma.reminder.create({
-      data: createReminderDto,
-    });
-  }
+async create(createReminderDto: CreateReminderDto) {
+  const data: any = {
+    ...createReminderDto,
+    times: createReminderDto.times ?? [],
+    date: createReminderDto.date ? new Date(createReminderDto.date) : null,
+  };
+
+  return await this.prisma.reminder.create({
+    data,
+    include: {
+      pet: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+}
+
+
 
   async findAll() {
     return await this.prisma.reminder.findMany({
       orderBy: { date: 'asc' },
+      include: {
+        pet: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
   }
 
   async findOneById(id: string) {
     const reminder = await this.prisma.reminder.findUnique({
       where: { id },
+      include: {
+        pet: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
 
     if (!reminder) {

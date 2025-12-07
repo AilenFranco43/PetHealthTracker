@@ -13,7 +13,7 @@ import {
   MaxFileSizeValidator,
   FileTypeValidator,
   Req,
-  UnauthorizedException, // Añade esto
+  UnauthorizedException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PetsService } from './pets.service';

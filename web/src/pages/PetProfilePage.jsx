@@ -116,34 +116,6 @@ export default function PetProfilePage() {
     return <PetProfileSkeleton />;
   }
 
-  // Si no hay mascota después de cargar (por si acaso)
-  if (!pet) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
-        <Link to="/pets" className="flex gap-3 mb-5 text-gray-500 font-medium">
-          <ArrowLeft /> Volver a mascotas
-        </Link>
-        <div className="max-w-3xl mx-auto text-center py-20">
-          <div className="text-gray-400 mb-4">
-            <PawPrint className="w-16 h-16 mx-auto opacity-50" />
-          </div>
-          <h2 className="text-2xl font-semibold text-gray-700 mb-2">
-            Mascota no encontrada
-          </h2>
-          <p className="text-gray-500 mb-6">
-            La mascota que buscas no existe o ha sido eliminada.
-          </p>
-          <Link
-            to="/pets"
-            className="inline-block px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-medium"
-          >
-            ← Ver todas las mascotas
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
       <Link to="/pets" className="flex gap-3 mb-5 text-gray-500 font-medium">
@@ -174,7 +146,7 @@ export default function PetProfilePage() {
                 <Cake className="text-blue-500" size={22} />
               </div>
               <p className="mt-2 text-gray-500 text-sm">Edad</p>
-              <p>{pet.age}</p>
+              <p>{pet.age ? `${pet.age}` : "No especificado"}</p>
             </div>
 
             <div className="flex flex-col items-center w-[180px]">
@@ -182,7 +154,7 @@ export default function PetProfilePage() {
                 <Weight className="text-purple-500" size={22} />
               </div>
               <p className="mt-2 text-gray-500 text-sm">Peso</p>
-              <p>{pet.weight}</p>
+              <p>{pet.weight > 0 ? `${pet.weight} kg` : "No especificado"}</p>
             </div>
 
             <div className="flex flex-col items-center w-[180px]">
@@ -190,7 +162,7 @@ export default function PetProfilePage() {
                 <PawPrint className="text-yellow-600" size={22} />
               </div>
               <p className="mt-2 text-gray-500 text-sm">Raza</p>
-              <p>{pet.breed}</p>
+              <p>{pet.breed ? `${pet.breed}` : "No especificado"}</p>
             </div>
           </div>
 

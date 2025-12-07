@@ -4,7 +4,8 @@ import AddPetBtn from "../components/pets/AddPetBtn";
 import Modal from "../components/pets/Modal";
 import PetForm from "../components/pets/PetForm";
 import { Search } from "lucide-react";
-import PetProfile from "../components/pets/PetProfile";
+
+import PetProfilePage from "./PetProfilePage";
 import SkeletonPetCard from "../components/pets/SkeletonPetCard";
 
 import { usePets } from "../hooks/usePets";
@@ -139,7 +140,7 @@ const PetsSection = () => {
       {/* MODAL PERFIL DE MASCOTA */}
       <Modal open={profileModalOpen} onClose={closeProfileModal}>
         {selectedPet && (
-          <PetProfile
+          <PetProfilePage
             pet={selectedPet}
             onBack={closeProfileModal}
             onViewRecords={() => console.log("Ver registros")}

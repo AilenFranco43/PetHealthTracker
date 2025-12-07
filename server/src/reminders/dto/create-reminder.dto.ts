@@ -1,14 +1,16 @@
 import {
-  IsDate,
   IsEnum,
   IsNotEmpty,
   IsOptional,
-
   IsString,
   IsUUID,
+  IsBoolean,
+  IsDateString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ReminderType } from '@prisma/client';
+import { Type } from 'class-transformer';
+
 
 export class CreateReminderDto {
   @ApiProperty({
@@ -35,23 +37,44 @@ export class CreateReminderDto {
     description: 'Fecha y hora del recordatorio en formato ISO 8601',
     example: '2023-12-31T10:00:00Z',
   })
-  @IsNotEmpty()
-  @IsDate()
-  date: Date;
+@IsOptional()
+@IsDateString()
+date?: string;
+
 
   @ApiProperty({
     description: 'Indica si el recordatorio ha sido completado',
     example: false,
     required: false,
   })
+  @IsOptional()
+  @IsBoolean()
   is_completed?: boolean;
 
-
-
-   @ApiProperty({
+  @ApiProperty({
     description: 'Indica si el recordatorio es urgente',
     example: false,
     required: false,
   })
+  @IsOptional()
+  @IsBoolean()
   is_urgent?: boolean;
+
+  @ApiProperty({
+    description: 'Indica si el recordatorio es de rutina',
+    example: false,
+    required: false,
+  })
+  @IsOptional()
+  @IsBoolean()
+  is_routine?: boolean;
+
+  @ApiProperty({
+    description: 'Horarios del recordatorio (HH:mm)',
+    example: ['08:00', '16:30'],
+    required: false,
+  })
+  @IsOptional()
+  @IsString({ each: true })
+  times?: string[];
 }

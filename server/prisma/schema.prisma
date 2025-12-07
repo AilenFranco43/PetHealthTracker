@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  username   String
-  email      String   @unique
-  password   String?
-  phone      Int?
-  photo_url  String?
-  provider   String?
-  hashedRefreshToken    String?
-  resetPasswordToken    String?     
-  resetPasswordExpires  DateTime?   
-  role       Role     @default(USER)
+  id                   String    @id @default(uuid())
+  username             String
+  email                String    @unique
+  password             String?
+  phone                Int?
+  photo_url            String?
+  provider             String?
+  hashedRefreshToken   String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  role                 Role      @default(USER)
 
-  pets       Pet[]
+  pets Pet[]
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
@@ -63,6 +63,7 @@ model NutritionRecord {
   food_type    String
   food_brand   String?
   daily_meals  Int
+  meal_times   String[]
   portion_size String
   notes        String?
   created_at   DateTime @default(now())
@@ -75,12 +76,15 @@ model Reminder {
   pet_id       String
   title        String
   type         ReminderType
-  date         DateTime
+  date         DateTime?
   is_completed Boolean      @default(false)
-  is_urgent  Boolean      @default(false)
-  created_at   DateTime     @default(now())
-  updated_at   DateTime     @updatedAt
-  pet          Pet          @relation(fields: [pet_id], references: [id])
+  is_urgent    Boolean      @default(false)
+  is_routine   Boolean      @default(false)
+  times        String[]     @default([])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  pet        Pet      @relation(fields: [pet_id], references: [id])
 }
 
 enum Role {
@@ -92,7 +96,6 @@ enum HealthRecordType {
   VACUNA
   CHEQUEO
   TRATAMIENTO
-  
 }
 
 enum ReminderType {
