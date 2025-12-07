@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaHeart, FaCalendarAlt, FaExclamationTriangle } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Plus } from "lucide-react";
@@ -9,13 +9,39 @@ import UpcomingEvents from "../components/UpcomingEvents";
 import QuickActions from "../components/QuickActions";
 import { useAuth } from "../hooks/useAuth";
 import SkeletonPetCard from "../components/pets/SkeletonPetCard";
+import { useReminders } from "../hooks/useReminders";
+import UpcomingEventsSkeleton from "../components/UpcomingEventsSkeleton";
 
 const Dashboard = () => {
   const { user } = useAuth();
   const { pets, getPets, loading } = usePets();
+  const { getReminders } = useReminders();
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
 
   useEffect(() => {
     getPets();
+  }, []);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const allReminders = await getReminders();
+
+        const upcoming = allReminders
+          .filter((r) => !r.is_completed && r.date)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .slice(0, 3);
+
+        setUpcomingEvents(upcoming);
+      } catch (error) {
+        console.error("Error cargando próximos eventos", error);
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
   return (
@@ -104,8 +130,13 @@ const Dashboard = () => {
           </div>
 
           {/* Próximos eventos */}
-          <div className="col-span-1">
-            <UpcomingEvents />
+          <div className="col-span-1 p-5">
+            <h3 className="pl-4 text-xl font-medium">Próximos eventos</h3>
+            {loadingEvents ? (
+              <UpcomingEventsSkeleton />
+            ) : (
+              <UpcomingEvents events={upcomingEvents} />
+            )}
           </div>
 
           {/* Acciones rápidas */}
