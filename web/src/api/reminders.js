@@ -27,6 +27,7 @@ export const createReminderRequest = async (data) => {
 };
 
 //  Obtener todos los recordatorios
+
 export const getRemindersRequest = async () => {
   const token = getToken();
 
@@ -36,6 +37,7 @@ export const getRemindersRequest = async () => {
     },
     credentials: "include",
   });
+
 
   return await res.json();
 };
