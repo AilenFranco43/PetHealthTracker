@@ -1,71 +1,65 @@
 import React from 'react';
-import { FaCheckCircle, FaArrowRight } from 'react-icons/fa';
-import heroDog from '../assets/hero-dog.jpg';
+import { FaCheckCircle, FaArrowRight, FaPaw  } from 'react-icons/fa';
+import heroDog from '../../public/img-principal.jpg';
+
 
 const Banner = () => {
     return (
-        <section className="relative bg-[#E3F0F1] py-12 lg:py-20 overflow-hidden">
+        <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
 
 
-                    <div className="w-full lg:w-1/2 flex flex-col items-start text-left sm:items-center sm:text-center  z-10">
-                        <h1 className="font-poppins text-4xl lg:text-5xl xl:text-6xl font-bold text-slate-700 leading-tight mb-6">
-                            La salud de tu mascota, <br className="hidden lg:block" />
-                            <span className="text-[#00BFA5]">todo en un</span> solo lugar
-                        </h1>
+                    <div className="w-full lg:w-1/2 flex flex-col  items-start text-left sm:items-center sm:text-center leading-10  z-10">
+                        <div className='text-start '>
+                            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-4 sm:mb-6 leading-tight">
+                                La Salud de tu Mascota,
+                                <span className="bg-gradient-to-r from-cyan-600 to-teal-600 bg-clip-text text-transparent">
+                                    {" "}Todo en un Solo Lugar
+                                </span>
+                            </h1>
 
-                        <p className="font-poppins text-slate-600 text-lg mb-8 max-w-lg leading-relaxed">
-                            Lleva el control de vacunas, citas, medicamentos y el historial completo de salud de tu mascota con nuestra plataforma intuitiva.
-                        </p>
+                            <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 leading-relaxed">
+                                Lleva el control de vacunas, citas, medicamentos y el historial completo de salud de tu mascota con nuestra plataforma intuitiva.
+                            </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto ">
-                            <button className="group flex items-center justify-center gap-2 bg-gradient-to-r from-[#00BFA5] to-cyan-500 text-white font-poppins font-medium px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
-                                Comenzar Gratis
-                                <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                            </button>
-
-                            <button className="flex items-center justify-center bg-white border border-gray-200 text-slate-600 font-poppins font-medium px-8 py-3.5 rounded-full hover:bg-gray-50 hover:border-gray-300 transition-all duration-300">
-                                Ver Demostración
-                            </button>
-                        </div>
-                        <div className="flex flex-col sm:flex-row gap-x-6 gap-y-2 mt-6 justify-center sm:justify-start">
-                            <div className="flex items-center gap-2">
-                                <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p className="font-poppins text-slate-600 text-sm">Sin tarjeta de crédito</p>
+                            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto py-2">
+                                <button className="group flex items-center justify-center 
+            bg-gradient-to-r from-cyan-500 to-teal-600 
+            shadow-xl text-white font-medium 
+            px-8 py-4 text-lg rounded-xl gap-3
+            hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                                    Comenzar
+                                    <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+                                </button>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p className="font-poppins text-slate-600 text-sm">Gratis para siempre</p>
-                            </div>
+                            <p className="font-poppins text-slate-600 text-base flex items-center gap-2 mt-8">
+                                <FaPaw className="text-cyan-600 text-xl" />
+                                Porque su salud también es parte de tu familia
+                            </p>
+
                         </div>
                     </div>
 
-                    <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-end">
-
-
-                        <div className="relative rounded-[2rem]  overflow-hidden shadow-2xl">
+                    <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-end ">
+                        <div className="relative rounded-[2rem]  overflow-hidden shadow-2xl bg-gradient-to-r from-cyan-500 to-teal-600">
                             <img
                                 src={heroDog}
                                 alt="Happy dog smiling"
-                                className="w-full max-w-md lg:max-w-lg object-cover h-auto"
+                                className="relative rounded-2xl sm:rounded-3xl shadow-2xl w-full"
                             />
                         </div>
 
 
-                        <div className="absolute lg:w-[40%] bottom-2 left-2 lg:-right-4 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-white/50 ">
-                            <div className="flex items-center gap-3">
-                                <div className="bg-emerald-100 p-2 rounded-full">
-                                    <FaCheckCircle className="text-emerald-500 text-xl" />
+                        <div className="hidden sm:block absolute -bottom-4 sm:-bottom-6 -left-2 sm:-left-6 bg-white p-3 sm:p-4 rounded-xl sm:rounded-2xl shadow-xl ">
+                            <div className="flex items-center gap-2 sm:gap-3">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-lg sm:rounded-xl flex items-center justify-center">
+                                    <FaCheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                                 </div>
                                 <div>
                                     <p className="font-poppins font-bold text-slate-700 text-sm">Vacunación Completa</p>
-                                    <p className="font-poppins text-xs text-slate-500">Max • Ahora mismo</p>
+                                    <p className="font-poppins text-sm text-slate-500">Max • Ahora mismo</p>
                                 </div>
                             </div>
                         </div>

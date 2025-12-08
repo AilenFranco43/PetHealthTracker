@@ -1,4 +1,6 @@
 import BenefitItem from "./BenefitItem";
+import { FaShieldAlt } from "react-icons/fa";
+
 
 export default function BenefitsSection() {
   const benefits = [
@@ -38,25 +40,12 @@ export default function BenefitsSection() {
               <BenefitItem key={index} text={b} />
             ))}
           </div>
-
-          <button className="inline-flex items-center justify-center gap-2 w-full sm:w-auto text-lg h-14 px-8 rounded-md bg-gradient-to-r from-cyan-500 to-teal-600 hover:from-cyan-600 hover:to-teal-700 text-white shadow-xl shadow-cyan-500/30">
-            Comenzar a Rastrear Hoy
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="ml-2 w-5 h-5"
-            >
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </button>
+          <div className="mt-8">
+            <p className="text-lg font-medium text-slate-700 flex items-center gap-2">
+              <FaShieldAlt className="text-teal-600 text-xl" />
+              Más de <span className="font-bold">10.000 dueños</span> ya confían en Pet Health
+            </p>
+          </div>
         </div>
       </div>
     </section>
