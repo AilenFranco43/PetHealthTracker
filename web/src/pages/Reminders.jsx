@@ -3,10 +3,9 @@ import { FaBell, FaCalendarAlt, FaClock, FaPlus } from 'react-icons/fa';
 import CalendarModal from '../components/CalendarModal';
 import AddReminderModal from '../components/AddReminderModal';
 
-
 const Reminders = () => {
+
     const [activeTab, setActiveTab] = useState('upcoming');
-    const [showCalendar, setShowCalendar] = useState(false);
     const [showAddModal, setShowAddModal] = useState(false);
 
     const [reminders, setReminders] = useState([
@@ -74,77 +73,89 @@ const Reminders = () => {
         setReminders([newReminder, ...reminders]);
     };
 
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
-            <header className="bg-gradient-to-r from-orange-400 to-red-500 rounded-3xl text-white p-6 pt-8 shadow-lg relative z-10">
+            
+            {/* HEADER */}
+            <header className="bg-gradient-to-r from-orange-400 to-red-500 rounded-3xl text-white p-6 pt-8 shadow-lg">
                 <div className="flex justify-between items-start mb-4">
                     <div>
                         <h1 className="text-3xl lg:text-4xl font-bold mb-2">Recordatorios</h1>
-                        <p className="text-orange-100 text-base lg:text-lg">Próximas citas y eventos</p>
+                        <p className="text-orange-100 text-base lg:text-lg">
+                            Próximas citas y eventos
+                        </p>
                     </div>
-                    <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl shadow-sm">
+                    <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
                         <FaBell className="text-white text-xl" />
                     </div>
                 </div>
             </header>
 
-            <div className="px-4 mt-6 relative z-20">
+            {/* TABS */}
+            <div className="px-4 mt-6">
                 <div className="bg-white rounded-2xl shadow-md p-1.5 flex mb-6">
                     <button
                         onClick={() => setActiveTab('upcoming')}
-                        className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${activeTab === 'upcoming'
-                            ? 'bg-orange-50 text-orange-500 shadow-sm'
-                            : 'text-gray-400 hover:text-gray-600'
-                            }`}
+                        className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            activeTab === 'upcoming'
+                                ? 'bg-orange-50 text-orange-500 shadow-sm'
+                                : 'text-gray-400 hover:text-gray-600'
+                        }`}
                     >
-                        Próximos (4)
+                        Próximos ({reminders.length})
                     </button>
+
                     <button
                         onClick={() => setActiveTab('completed')}
-                        className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${activeTab === 'completed'
-                            ? 'bg-orange-50 text-orange-500 shadow-sm'
-                            : 'text-gray-400 hover:text-gray-600'
-                            }`}
+                        className={`flex-1 py-2.5 text-sm font-bold rounded-xl transition-all duration-200 ${
+                            activeTab === 'completed'
+                                ? 'bg-orange-50 text-orange-500 shadow-sm'
+                                : 'text-gray-400 hover:text-gray-600'
+                        }`}
                     >
                         Completados (2)
                     </button>
                 </div>
 
+                {/* Botón agregar */}
                 <button
                     onClick={() => setShowAddModal(true)}
-                    className="w-full bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 mb-6 hover:opacity-95 transition-opacity"
+                    className="w-full bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 mb-6 hover:opacity-95"
                 >
-
                     <FaPlus className="text-lg" />
                     <span>Agregar recordatorio</span>
                 </button>
 
+                {/* Listado */}
                 <div className="space-y-4">
-                    {reminders.map((reminder) => (
-                        <div key={reminder.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-4">
-                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${reminder.iconColor}`}>
+                    {reminders.map((r) => (
+                        <div key={r.id} className="bg-white rounded-2xl p-4 shadow-sm border flex items-center gap-4">
+                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${r.iconColor}`}>
                                 <FaBell className="text-lg" />
                             </div>
 
                             <div className="flex-1 min-w-0">
                                 <div className="flex justify-between items-start">
-                                    <h3 className="font-bold text-gray-800 truncate pr-2">{reminder.title}</h3>
-                                    {reminder.urgent && (
+                                    <h3 className="font-bold text-gray-800 truncate">{r.title}</h3>
+                                    {r.urgent && (
                                         <span className="bg-amber-100 text-amber-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-200">
                                             URGENTE
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium mb-1">{reminder.pet} • {reminder.type}</p>
+
+                                <p className="text-sm text-gray-500 mb-1">
+                                    {r.pet} • {r.type}
+                                </p>
+
                                 <div className="flex items-center gap-3 text-xs text-gray-400">
                                     <div className="flex items-center gap-1">
                                         <FaCalendarAlt />
-                                        <span>{reminder.date}</span>
+                                        <span>{r.date}</span>
                                     </div>
                                     <div className="flex items-center gap-1">
                                         <FaClock />
-                                        <span>{reminder.time}</span>
+                                        <span>{r.time}</span>
                                     </div>
                                 </div>
                             </div>
@@ -152,27 +163,10 @@ const Reminders = () => {
                     ))}
                 </div>
 
-                {/* Sección Vista Calendario */}
-                <div className="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center">
-                    <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-[#E17100] mb-3">
-                        <FaCalendarAlt className="text-xl" />
-                    </div>
-                    <h3 className="font-bold text-gray-800 text-lg mb-1">Vista calendario</h3>
-                    <p className="text-sm text-gray-400 mb-4 max-w-xs">Visualiza todos tus recordatorios en un calendario mensual</p>
-                    <button
-                        onClick={() => setShowCalendar(true)}
-                        className="px-6 py-2.5 rounded-xl border border-[#E17100] text-[#E17100] font-bold hover:bg-orange-50 transition-colors text-sm"
-                    >
-                        Abrir calendario
-                    </button>
-                </div>
-            </div>
+                {/* CALENDARIO INTEGRADO DIRECTO */}
+                <CalendarModal reminders={reminders} />
 
-            <CalendarModal
-                isOpen={showCalendar}
-                onClose={() => setShowCalendar(false)}
-                reminders={reminders}
-            />
+            </div>
 
             <AddReminderModal
                 isOpen={showAddModal}
