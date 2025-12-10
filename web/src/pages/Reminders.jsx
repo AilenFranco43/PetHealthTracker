@@ -160,25 +160,6 @@ const Reminders = () => {
           onToggleCompleted={handleToggleCompleted}
           loading={loading}
         />
-
-        {/* Calendar Section */}
-        <div className="mt-8 bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center text-center">
-          <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-[#E17100] mb-3">
-            <CalendarDays className="text-xl" />
-          </div>
-          <h3 className="font-bold text-gray-800 text-lg mb-1">
-            Vista calendario
-          </h3>
-          <p className="text-sm text-gray-400 mb-4 max-w-xs">
-            Visualiza todos tus recordatorios en un calendario mensual
-          </p>
-          <button
-            onClick={() => setShowCalendar(true)}
-            className="px-6 py-2.5 rounded-xl border border-[#E17100] text-[#E17100] font-bold hover:bg-orange-50 transition-colors text-sm"
-          >
-            Abrir calendario
-          </button>
-        </div>
       </div>
 
       {/* Modals */}
