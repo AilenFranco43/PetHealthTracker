@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaCheckCircle, FaArrowRight, FaPaw  } from 'react-icons/fa';
-import heroDog from '../../public/img-principal.jpg';
+import heroDog from '/img-principal.jpg';
 
 
 const Banner = () => {

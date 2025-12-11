@@ -1,18 +1,18 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  UseInterceptors, 
-  UploadedFiles, 
-  ParseFilePipe, 
-  MaxFileSizeValidator, 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseInterceptors,
+  UploadedFiles,
+  ParseFilePipe,
+  MaxFileSizeValidator,
   FileTypeValidator,
   UsePipes,
-  ValidationPipe
+  ValidationPipe,
 } from '@nestjs/common';
 import { HealthRecordsService } from './health-records.service';
 import { CreateHealthRecordDto } from './dto/create-health-record.dto';
@@ -50,6 +50,11 @@ export class HealthRecordsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.healthRecordsService.findOne(id);
+  }
+
+  @Get('pet/:petId')
+  findByPet(@Param('petId') petId: string) {
+    return this.healthRecordsService.findByPet(petId);
   }
 
   @Patch(':id')

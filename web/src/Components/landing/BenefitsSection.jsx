@@ -1,4 +1,4 @@
-import BenefitItem from "./BenefitItem";
+import BenefitItem from "../Beneficios/BenefitItem";
 import { FaShieldAlt } from "react-icons/fa";
 
 

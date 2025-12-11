@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import LandingPage from "./pages/LandingPage";
 import HealthPage from "./pages/HealthPage";
+import HealthRecordDetailPage from "./pages/HealthRecordDetailPage.jsx";
 import MainPage from "./pages/MainPage";
 import NutritionSection from "./pages/NutritionSection";
 import PetsSection from "./pages/PetsSection";
@@ -56,6 +57,7 @@ function App() {
           >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/health" element={<HealthPage />} />
+            <Route path="/health/record/:id" element={<HealthRecordDetailPage />} />
             <Route path="/nutrition" element={<NutritionSection />} />
             <Route path="/pets" element={<PetsSection />} />
             <Route path="/pets/:id" element={<PetProfilePage />} />

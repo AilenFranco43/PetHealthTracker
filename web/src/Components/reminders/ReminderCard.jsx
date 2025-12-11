@@ -22,6 +22,27 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
 
   const iconData = typeIcons[reminder.type] || typeIcons.OTRO;
 
+  // --- ✨ FUNCIONES IGUALES A RECORDCARD ✨ ---
+  const truncateDescription = (text, maxLength = 80) => {
+    if (!text) return "";
+    if (text.length <= maxLength) return text;
+
+    const truncated = text.substring(0, maxLength);
+    const lastSpace = truncated.lastIndexOf(" ");
+
+    return lastSpace > 0
+      ? truncated.substring(0, lastSpace) + "..."
+      : truncated + "...";
+  };
+
+  const getTitleFromDescription = (description) => {
+    if (!description) return "";
+    const parts = description.split(" - ");
+    if (parts.length > 1) return parts[0];
+    return truncateDescription(description, 60);
+  };
+  // ------------------------------------------------
+
   let formattedDate = "";
   let formattedTime = "";
 
@@ -46,39 +67,40 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
   return (
     <>
       <div className="bg-white rounded-2xl shadow-md p-4 flex flex-col gap-3 border border-gray-100 hover:shadow-lg transition-shadow">
-        {/* Row superior: icono + título + acciones */}
+
+        {/* Row superior */}
         <div className="flex items-start justify-between gap-3">
           <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${iconData.color}`}>
             {iconData.icon}
           </div>
 
           <div className="flex-1 min-w-0">
-            <h3 className="text-gray-800 font-bold text-lg truncate">{reminder.title}</h3>
-            <p className="text-sm text-gray-500">{reminder.pet?.name} • {reminder.type}</p>
+            <h3 className="text-gray-800 font-bold text-lg truncate">
+              {getTitleFromDescription(reminder.title)}
+            </h3>
+
+            <p className="text-sm text-gray-500 truncate">
+              {truncateDescription(`${reminder.pet?.name} • ${reminder.type}`, 40)}
+            </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="relative flex items-center group">
-              <CheckCircle
-                size={20}
-                className={`cursor-pointer ${reminder.is_completed ? "text-green-600" : "text-gray-400"}`}
-                onClick={() => onToggleCompleted(reminder.id, reminder.is_completed)}
-              />
-              <span className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-max bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                {reminder.is_completed ? "Marcar como no completado" : "Marcar como completado"}
-              </span>
-            </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <CheckCircle
+              size={20}
+              className={`cursor-pointer ${reminder.is_completed ? "text-green-600" : "text-gray-400"}`}
+              onClick={() => onToggleCompleted(reminder.id, reminder.is_completed)}
+            />
 
             {reminder.is_urgent && (
               <div className="flex items-center gap-1 bg-red-100 text-red-700 px-2 py-0.5 rounded-full text-xs font-semibold">
                 <AlertCircle size={14} />
-                Urgente
+                <span>Urgente</span>
               </div>
             )}
 
             <button
               onClick={() => setShowConfirm(true)}
-              className="text-red-500 hover:text-red-700 transition-colors"
+              className="text-red-500 hover:text-red-700"
               title="Eliminar"
             >
               <Trash2 size={18} />
@@ -86,38 +108,43 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
           </div>
         </div>
 
-        {/* Row inferior: fecha / hora o rutina */}
+        {/* Fecha / hora */}
         <div className="flex flex-wrap gap-4 text-gray-500 text-sm items-center">
+
           {isRoutine ? (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 truncate">
               <Clock size={14} />
-              Rutina diaria: {reminder.times?.join(", ")}
+              <span className="truncate">Rutina diaria: {reminder.times?.join(", ")}</span>
             </div>
           ) : (
             <>
               <div className="flex items-center gap-1">
                 <CalendarDays size={14} />
-                {formattedDate}
+                <span>{formattedDate}</span>
               </div>
+
               <div className="flex items-center gap-1">
                 <Clock size={14} />
-                {formattedTime}
+                <span>{formattedTime}</span>
               </div>
             </>
           )}
+
         </div>
       </div>
 
-      {/* Modal de confirmación */}
+      {/* Modal */}
       {showConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-2xl p-6 w-80 shadow-lg">
-            <h4 className="font-bold text-gray-800 mb-4">Confirmar eliminación</h4>
-            <p className="text-sm text-gray-600 mb-6">¿Estás seguro de que quieres eliminar este recordatorio?</p>
+            <h4 className="font-bold mb-4">Confirmar eliminación</h4>
+            <p className="text-sm text-gray-600 mb-6">
+              ¿Eliminar "{getTitleFromDescription(reminder.title)}"?
+            </p>
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 rounded-xl border border-gray-300 text-gray-700"
+                className="px-4 py-2 rounded-xl border border-gray-300"
               >
                 Cancelar
               </button>

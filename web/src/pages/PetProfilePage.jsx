@@ -1,3 +1,4 @@
+// PetProfilePage.jsx - Versión actualizada
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -8,28 +9,38 @@ import {
   Trash2,
   ArrowLeft,
   X,
+  PlusCircle,
+  Syringe,
+  FileText,
+  Pill,
 } from "lucide-react";
-import PetRecentRecords from "../components/pets/PetRecentRecords";
+import RecordCard from "../components/health/RecordCard"; // Importar RecordCard
 import PetForm from "../components/pets/PetForm";
 import { usePets } from "../hooks/usePets";
-import PetProfileSkeleton from "../components//pets/PetProfileSkeleton";
+import PetProfileSkeleton from "../components/pets/PetProfileSkeleton";
 import toast from "react-hot-toast";
+import { useHealthRecords } from "../hooks/useHealthRecords";
 
 export default function PetProfilePage() {
   const { id } = useParams();
   const { getPetById, updatePet, deletePet } = usePets();
+  const { getHealthRecordsByPet, deleteHealthRecord } = useHealthRecords();
 
+  const [healthRecords, setHealthRecords] = useState([]);
   const [pet, setPet] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [recordsLoading, setRecordsLoading] = useState(false);
 
   useEffect(() => {
-    const loadPet = async () => {
+    const loadData = async () => {
       try {
-        const data = await getPetById(id);
-        setPet(data);
+        setInitialLoading(true);
+        const petData = await getPetById(id);
+        setPet(petData);
+        await loadHealthRecords();
       } catch (error) {
         toast.error("Error al cargar la mascota");
       } finally {
@@ -37,8 +48,49 @@ export default function PetProfilePage() {
       }
     };
 
-    loadPet();
+    loadData();
   }, [id]);
+
+
+const loadHealthRecords = async () => {
+  try {
+    setRecordsLoading(true);
+    
+    
+    const records = await getHealthRecordsByPet(id);
+ 
+    
+    setHealthRecords(records);
+  } catch (error) {
+   
+    toast.error("Error al cargar registros de salud");
+  } finally {
+    setRecordsLoading(false);
+  }
+};
+  const handleDeleteRecord = async (recordId) => {
+    try {
+      await deleteHealthRecord(recordId);
+      toast.success("Registro eliminado correctamente");
+      // Recargar los registros después de eliminar
+      await loadHealthRecords();
+    } catch (error) {
+      toast.error("Error al eliminar el registro");
+    }
+  };
+
+  const getRecordType = (type) => {
+    switch (type) {
+      case "VACUNA":
+        return "vaccine";
+      case "CHEQUEO":
+        return "checkup";
+      case "TRATAMIENTO":
+        return "treatment";
+      default:
+        return "treatment";
+    }
+  };
 
   const handleSaveEdit = async (formDataOrObject) => {
     setLoading(true);
@@ -194,8 +246,102 @@ export default function PetProfilePage() {
           </div>
         </div>
 
-        <div className="mt-10">
-          <PetRecentRecords records={pet.recentRecords || []} />
+        {/* Sección de registros de salud */}
+        <div className="mt-10 bg-white rounded-2xl shadow-md p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900">
+                Registros de salud
+              </h2>
+              <p className="text-gray-500 text-sm mt-1">
+                Historial médico de {pet.name}
+              </p>
+            </div>
+            
+            <Link 
+              to="/health?tab=vaccines"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-sm hover:shadow"
+            >
+              <PlusCircle size={18} />
+              <span>Agregar registro</span>
+            </Link>
+          </div>
+
+          {recordsLoading ? (
+            <div className="space-y-4">
+              {/* Skeleton para registros */}
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="bg-gray-100 rounded-xl p-5 animate-pulse">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-gray-300 rounded-xl"></div>
+                    <div className="flex-1 space-y-3">
+                      <div className="h-5 bg-gray-300 rounded w-3/4"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/2"></div>
+                      <div className="h-4 bg-gray-300 rounded w-1/4"></div>
+                    </div>
+                    <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : healthRecords.length > 0 ? (
+            <div className="space-y-4">
+              {healthRecords.map((record) => (
+                <RecordCard
+                  key={record.id}
+                  data={record}
+                  type={getRecordType(record.type)}
+                  onDelete={handleDeleteRecord}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                <Syringe className="w-10 h-10 text-gray-400" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No hay registros de salud
+              </h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                Aún no has agregado ningún registro de salud para {pet.name}. 
+                ¡Comienza a registrar vacunas, chequeos y tratamientos!
+              </p>
+              <Link 
+                to="/health?tab=vaccines"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-md hover:shadow-lg"
+              >
+                <PlusCircle size={20} />
+                <span>Crear primer registro</span>
+              </Link>
+            </div>
+          )}
+
+          {/* Contador por tipo de registro */}
+          {healthRecords.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">
+                    Vacunas: {healthRecords.filter(r => r.type === "VACUNA").length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">
+                    Chequeos: {healthRecords.filter(r => r.type === "CHEQUEO").length}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
+                  <span className="text-sm text-gray-600">
+                    Tratamientos: {healthRecords.filter(r => r.type === "TRATAMIENTO").length}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

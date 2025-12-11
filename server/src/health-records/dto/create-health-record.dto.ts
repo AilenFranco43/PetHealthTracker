@@ -20,7 +20,6 @@ export class CreateHealthRecordDto {
   @IsDateString()
   second_date?: string;
 
-  // Elimina estas líneas o hazlas opcionales
   @IsOptional()
   @IsArray()
   @IsString({ each: true })

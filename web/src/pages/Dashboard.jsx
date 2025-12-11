@@ -5,12 +5,12 @@ import { Plus } from "lucide-react";
 
 import PetList from "../components/pets/PetList";
 import { usePets } from "../hooks/usePets";
-import UpcomingEvents from "../components/UpcomingEvents";
+import UpcomingEvents from "../components/reminders/UpcomingEvents";
 import QuickActions from "../components/QuickActions";
 import { useAuth } from "../hooks/useAuth";
 import SkeletonPetCard from "../components/pets/SkeletonPetCard";
 import { useReminders } from "../hooks/useReminders";
-import UpcomingEventsSkeleton from "../components/UpcomingEventsSkeleton";
+import UpcomingEventsSkeleton from "../components/reminders/UpcomingEventsSkeleton";
 
 const Dashboard = () => {
   const { user } = useAuth();

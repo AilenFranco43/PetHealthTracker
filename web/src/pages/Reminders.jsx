@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Bell, CalendarDays, Plus } from "lucide-react";
-import CalendarModal from "../components/CalendarModal";
-import AddReminderModal from "../components/AddReminderModal";
+import CalendarModal from "../components/reminders/CalendarModal";
+import AddReminderModal from "../components/reminders/AddReminderModal";
 import RemindersList from "../components/reminders/RemindersList";
 import { useReminders } from "../hooks/useReminders";
 import { usePets } from "../hooks/usePets";

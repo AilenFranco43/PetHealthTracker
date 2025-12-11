@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { FaClipboardList, FaBell, FaShieldAlt, FaCalendarAlt } from "react-icons/fa";
-import ServiceCard from './ServiceCard';
+import ServiceCard from '../ServicesSection/ServiceCard';
 
 
 const ServicesSection = () => {
