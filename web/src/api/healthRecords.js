@@ -58,6 +58,7 @@ export const getHealthRecordByIdRequest = async (id) => {
 
 // Obtener registros de una mascota específica
 
+// Obtener registros de una mascota específica
 export const getHealthRecordsByPetRequest = async (petId) => {
   const token = getToken();
 
@@ -65,6 +66,13 @@ export const getHealthRecordsByPetRequest = async (petId) => {
     headers: { Authorization: `Bearer ${token}` },
     credentials: "include",
   });
+
+  // FALTA ESTA PARTE:
+  if (!res.ok) {
+    throw new Error(`Error al obtener registros: ${res.status}`);
+  }
+  
+  return await res.json(); 
 };
 
 // Actualizar (PATCH)

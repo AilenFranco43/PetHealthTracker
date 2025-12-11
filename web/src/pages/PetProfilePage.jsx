@@ -58,11 +58,11 @@ const loadHealthRecords = async () => {
     
     
     const records = await getHealthRecordsByPet(id);
- 
+    console.log("Registros recibidos:", records); // Debug
     
     setHealthRecords(records);
   } catch (error) {
-   
+    console.error("Error detallado:", error); // Debug
     toast.error("Error al cargar registros de salud");
   } finally {
     setRecordsLoading(false);
