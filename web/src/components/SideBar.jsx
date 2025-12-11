@@ -24,40 +24,52 @@ const SideBar = () => {
   const navigate = useNavigate();
 
 
-  // Función para determinar si un ítem está activo
-  const isActive = (path) => {
-    // Para la ruta de pets/:id
-    if (path === "/pets" && location.pathname.startsWith("/pets/")) {
-      return true;
-    }
-    return location.pathname === path;
+
+// Función para determinar si un ítem está activo
+const isActive = (path) => {
+  // Para la ruta de pets/:id
+  if (path === "/pets" && location.pathname.startsWith("/pets/")) {
+    return true;
+  }
+  
+  // Para la ruta de health/:id
+  if (path === "/health" && location.pathname.startsWith("/health/")) {
+    return true;
+  }
+  
+  // Para coincidencia exacta
+  return location.pathname === path;
+};
+
+ // Función para obtener el nombre activo para mostrar
+const getActiveName = () => {
+  // Mapeo de rutas a nombres
+  const routeToName = {
+    "/dashboard": "Dashboard",
+    "/pets": "Mis mascotas",
+    "/health": "Salud",
+    "/nutrition": "Nutricion",
+    "/reminders": "Recordatorios",
+    "/configuration": "Configuración",
   };
 
-  // Función para obtener el nombre activo para mostrar
-  const getActiveName = () => {
-    // Mapeo de rutas a nombres
-    const routeToName = {
-      "/dashboard": "Dashboard",
-      "/pets": "Mis mascotas",
-      "/health": "Salud",
-      "/nutrition": "Nutrition",
-      "/reminders": "Recordatorios",
-      "/configuration": "Configuración",
-    };
+  // Para rutas como /pets/:id
+  if (location.pathname.startsWith("/pets/")) {
+    return "Mis mascotas";
+  }
+  
+  // Para rutas como /health/:id - ¡NUEVA LÍNEA!
+  if (location.pathname.startsWith("/health/")) {
+    return "Salud";
+  }
 
-    // Para rutas como /pets/:id
-    if (location.pathname.startsWith("/pets/")) {
-      return "Mis mascotas";
-    }
-
-    return routeToName[location.pathname] || "";
-  };
-
+  return routeToName[location.pathname] || "";
+};
   const navItems = [
     { name: "Dashboard", icon: <FaHome />, path: "/dashboard" },
     { name: "Mis mascotas", icon: <PiDogFill />, path: "/pets" },
     { name: "Salud", icon: <FaHeartbeat />, path: "/health" },
-    { name: "Nutrition", icon: <FaCarrot />, path: "/nutrition" },
+    { name: "Nutrición", icon: <FaCarrot />, path: "/nutrition" },
     { name: "Recordatorios", icon: <FaBell />, path: "/reminders" },
     { name: "Configuración", icon: <FaUser />, path: "/configuration" },
   ];
