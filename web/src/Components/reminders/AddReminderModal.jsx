@@ -1,8 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
+import Button from "../common/Button";
 
-const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) => {
+const AddReminderModal = ({
+  isOpen,
+  onClose,
+  onAdd,
+  pets = [],
+  petsLoading,
+}) => {
   const {
     register,
     handleSubmit,
@@ -24,7 +31,7 @@ const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) =>
   if (!isOpen) return null;
 
   const onSubmit = (data) => {
-    if (!data.pet_id) return; // seguridad extra
+    if (!data.pet_id) return; 
     const reminderData = {
       pet_id: data.pet_id,
       title: data.title,
@@ -84,26 +91,34 @@ const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) =>
               ))}
             </select>
             {errors.pet_id && (
-              <p className="text-red-500 text-xs mt-1">{errors.pet_id.message}</p>
+              <p className="text-red-500 text-xs mt-1">
+                {errors.pet_id.message}
+              </p>
             )}
           </div>
 
           {/* Título */}
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">Título</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Título
+            </label>
             <input
               {...register("title", { required: "El título es obligatorio" })}
               placeholder="Ej: Vacuna antirrábica"
               className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:border-[#E17100] outline-none"
             />
             {errors.title && (
-              <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>
+              <p className="text-red-500 text-xs mt-1">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
           {/* Tipo de evento */}
           <div className="space-y-1">
-            <label className="block text-sm font-medium text-gray-700">Tipo de evento</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Tipo de evento
+            </label>
             <select
               {...register("type", { required: "Selecciona un tipo" })}
               className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:border-[#E17100] outline-none"
@@ -128,7 +143,10 @@ const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) =>
               {...register("is_routine")}
               className="w-5 h-5 rounded border-gray-300 text-[#E17100]"
             />
-            <label htmlFor="is_routine" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="is_routine"
+              className="text-sm font-medium text-gray-700"
+            >
               Es rutina diaria
             </label>
           </div>
@@ -137,31 +155,45 @@ const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) =>
           {!watchIsRoutine ? (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Fecha</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Fecha
+                </label>
                 <input
                   type="date"
-                  {...register("date", { required: !watchIsRoutine && "La fecha es obligatoria" })}
+                  {...register("date", {
+                    required: !watchIsRoutine && "La fecha es obligatoria",
+                  })}
                   className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:border-[#E17100] outline-none"
                 />
                 {errors.date && (
-                  <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.date.message}
+                  </p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Hora</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Hora
+                </label>
                 <input
                   type="time"
-                  {...register("time", { required: !watchIsRoutine && "La hora es obligatoria" })}
+                  {...register("time", {
+                    required: !watchIsRoutine && "La hora es obligatoria",
+                  })}
                   className="w-full px-4 py-2 rounded-xl border border-gray-300 focus:border-[#E17100] outline-none"
                 />
                 {errors.time && (
-                  <p className="text-red-500 text-xs mt-1">{errors.time.message}</p>
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.time.message}
+                  </p>
                 )}
               </div>
             </div>
           ) : (
             <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">Horarios de rutina</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Horarios de rutina
+              </label>
               {watchTimes.map((_, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <input
@@ -186,7 +218,9 @@ const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) =>
               ))}
               <button
                 type="button"
-                onClick={() => setValue("timesInputs", [...watchTimes, "08:00"])}
+                onClick={() =>
+                  setValue("timesInputs", [...watchTimes, "08:00"])
+                }
                 className="text-sm text-[#E17100] font-bold mt-1"
               >
                 + Agregar horario
@@ -202,18 +236,21 @@ const AddReminderModal = ({ isOpen, onClose, onAdd, pets = [], petsLoading }) =>
               {...register("urgent")}
               className="w-5 h-5 rounded border-gray-300 text-[#E17100]"
             />
-            <label htmlFor="urgent" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="urgent"
+              className="text-sm font-medium text-gray-700"
+            >
               Marcar como urgente
             </label>
           </div>
 
           {/* Submit */}
-          <button
+          <Button
             type="submit"
-            className="w-full mt-4 bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold py-3 rounded-xl shadow-lg hover:opacity-95 transition-opacity"
-          >
-            Guardar Recordatorio
-          </button>
+            mode="create"
+            text="Guardar Recordatorio"
+            full
+          />
         </form>
       </div>
     </div>

@@ -1,6 +1,7 @@
-// PetProfilePage.jsx - Versión actualizada
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ConfirmModal from "../components/common/ConfirmModal";
+
 import {
   PawPrint,
   Cake,
@@ -14,7 +15,7 @@ import {
   FileText,
   Pill,
 } from "lucide-react";
-import RecordCard from "../components/health/RecordCard"; // Importar RecordCard
+import RecordCard from "../components/health/RecordCard";
 import PetForm from "../components/pets/PetForm";
 import { usePets } from "../hooks/usePets";
 import PetProfileSkeleton from "../components/pets/PetProfileSkeleton";
@@ -51,23 +52,21 @@ export default function PetProfilePage() {
     loadData();
   }, [id]);
 
+  const loadHealthRecords = async () => {
+    try {
+      setRecordsLoading(true);
 
-const loadHealthRecords = async () => {
-  try {
-    setRecordsLoading(true);
-    
-    
-    const records = await getHealthRecordsByPet(id);
-    console.log("Registros recibidos:", records); // Debug
-    
-    setHealthRecords(records);
-  } catch (error) {
-    console.error("Error detallado:", error); // Debug
-    toast.error("Error al cargar registros de salud");
-  } finally {
-    setRecordsLoading(false);
-  }
-};
+      const records = await getHealthRecordsByPet(id);
+      console.log("Registros recibidos:", records); // Debug
+
+      setHealthRecords(records);
+    } catch (error) {
+      console.error("Error detallado:", error); // Debug
+      toast.error("Error al cargar registros de salud");
+    } finally {
+      setRecordsLoading(false);
+    }
+  };
   const handleDeleteRecord = async (recordId) => {
     try {
       await deleteHealthRecord(recordId);
@@ -248,7 +247,7 @@ const loadHealthRecords = async () => {
 
         {/* Sección de registros de salud */}
         <div className="mt-10 bg-white rounded-2xl shadow-md p-6">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-2">
             <div>
               <h2 className="text-xl font-bold text-gray-900">
                 Registros de salud
@@ -257,21 +256,16 @@ const loadHealthRecords = async () => {
                 Historial médico de {pet.name}
               </p>
             </div>
-            
-            <Link 
-              to="/health?tab=vaccines"
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-sm hover:shadow"
-            >
-              <PlusCircle size={18} />
-              <span>Agregar registro</span>
-            </Link>
           </div>
 
           {recordsLoading ? (
             <div className="space-y-4">
               {/* Skeleton para registros */}
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-gray-100 rounded-xl p-5 animate-pulse">
+                <div
+                  key={i}
+                  className="bg-gray-100 rounded-xl p-5 animate-pulse"
+                >
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-gray-300 rounded-xl"></div>
                     <div className="flex-1 space-y-3">
@@ -296,20 +290,20 @@ const loadHealthRecords = async () => {
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
+            <div className="text-center py-2">
               <div className="w-20 h-20 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                <Syringe className="w-10 h-10 text-gray-400" />
+                <Syringe className="w-8 h-8 text-gray-400" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 No hay registros de salud
               </h3>
               <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                Aún no has agregado ningún registro de salud para {pet.name}. 
+                Aún no has agregado ningún registro de salud para {pet.name}.
                 ¡Comienza a registrar vacunas, chequeos y tratamientos!
               </p>
-              <Link 
+              <Link
                 to="/health?tab=vaccines"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-md hover:shadow-lg"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium shadow-md hover:shadow-lg"
               >
                 <PlusCircle size={20} />
                 <span>Crear primer registro</span>
@@ -324,19 +318,25 @@ const loadHealthRecords = async () => {
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                   <span className="text-sm text-gray-600">
-                    Vacunas: {healthRecords.filter(r => r.type === "VACUNA").length}
+                    Vacunas:{" "}
+                    {healthRecords.filter((r) => r.type === "VACUNA").length}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
                   <span className="text-sm text-gray-600">
-                    Chequeos: {healthRecords.filter(r => r.type === "CHEQUEO").length}
+                    Chequeos:{" "}
+                    {healthRecords.filter((r) => r.type === "CHEQUEO").length}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-pink-500 rounded-full"></div>
                   <span className="text-sm text-gray-600">
-                    Tratamientos: {healthRecords.filter(r => r.type === "TRATAMIENTO").length}
+                    Tratamientos:{" "}
+                    {
+                      healthRecords.filter((r) => r.type === "TRATAMIENTO")
+                        .length
+                    }
                   </span>
                 </div>
               </div>
@@ -382,43 +382,16 @@ const loadHealthRecords = async () => {
         </div>
       )}
 
-      {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6">
-            <h3 className="text-xl font-semibold mb-2">
-              Confirmar Eliminación
-            </h3>
-            <p className="text-gray-600 mb-6">
-              ¿Estás seguro de que deseas eliminar a{" "}
-              <span className="font-semibold">{pet.name}</span>? Esta acción no
-              se puede deshacer.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setShowDeleteConfirm(false)}
-                disabled={loading}
-                className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleDelete}
-                disabled={loading}
-                className="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition font-medium disabled:opacity-50"
-              >
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Eliminando...
-                  </span>
-                ) : (
-                  "Sí, Eliminar"
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        open={showDeleteConfirm}
+        title="Confirmar eliminación"
+        message={`¿Estás seguro de que deseas eliminar a ${pet.name}? Esta acción no se puede deshacer.`}
+        confirmText="Sí, eliminar"
+        cancelText="Cancelar"
+        loading={loading}
+        onCancel={() => setShowDeleteConfirm(false)}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

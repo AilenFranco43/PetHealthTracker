@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Bell, CalendarDays, Plus } from "lucide-react";
-import CalendarModal from "../components/reminders/CalendarModal";
+import Calendar from "../components/reminders/Calendar";
 import AddReminderModal from "../components/reminders/AddReminderModal";
 import RemindersList from "../components/reminders/RemindersList";
 import { useReminders } from "../hooks/useReminders";
@@ -163,7 +163,7 @@ const Reminders = () => {
       </div>
 
       {/* Modals */}
-      <CalendarModal
+      <Calendar
         isOpen={showCalendar}
         onClose={() => setShowCalendar(false)}
         reminders={reminders}

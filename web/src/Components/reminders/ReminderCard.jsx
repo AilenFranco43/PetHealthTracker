@@ -7,22 +7,35 @@ import {
   Trash2,
 } from "lucide-react";
 import { Syringe, Utensils, Stethoscope, Pill, Sparkles } from "lucide-react";
+import ConfirmModal from "../common/ConfirmModal";
 
-export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) {
+export default function ReminderCard({
+  reminder,
+  onDelete,
+  onToggleCompleted,
+}) {
   const [showConfirm, setShowConfirm] = useState(false);
   const isRoutine = reminder.is_routine;
 
   const typeIcons = {
     VACUNA: { icon: <Syringe size={22} />, color: "bg-blue-100 text-blue-600" },
-    ALIMENTACION: { icon: <Utensils size={22} />, color: "bg-orange-100 text-orange-600" },
-    VISITA: { icon: <Stethoscope size={22} />, color: "bg-red-100 text-red-600" },
-    TRATAMIENTO: { icon: <Pill size={22} />, color: "bg-purple-100 text-purple-600" },
+    ALIMENTACION: {
+      icon: <Utensils size={22} />,
+      color: "bg-orange-100 text-orange-600",
+    },
+    VISITA: {
+      icon: <Stethoscope size={22} />,
+      color: "bg-red-100 text-red-600",
+    },
+    TRATAMIENTO: {
+      icon: <Pill size={22} />,
+      color: "bg-purple-100 text-purple-600",
+    },
     OTRO: { icon: <Sparkles size={22} />, color: "bg-gray-200 text-gray-700" },
   };
 
   const iconData = typeIcons[reminder.type] || typeIcons.OTRO;
 
-  // --- ✨ FUNCIONES IGUALES A RECORDCARD ✨ ---
   const truncateDescription = (text, maxLength = 80) => {
     if (!text) return "";
     if (text.length <= maxLength) return text;
@@ -67,10 +80,11 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
   return (
     <>
       <div className="bg-white rounded-2xl shadow-md p-4 flex flex-col gap-3 border border-gray-100 hover:shadow-lg transition-shadow">
-
         {/* Row superior */}
         <div className="flex items-start justify-between gap-3">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${iconData.color}`}>
+          <div
+            className={`w-12 h-12 rounded-2xl flex items-center justify-center ${iconData.color}`}
+          >
             {iconData.icon}
           </div>
 
@@ -80,15 +94,22 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
             </h3>
 
             <p className="text-sm text-gray-500 truncate">
-              {truncateDescription(`${reminder.pet?.name} • ${reminder.type}`, 40)}
+              {truncateDescription(
+                `${reminder.pet?.name} • ${reminder.type}`,
+                40
+              )}
             </p>
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
             <CheckCircle
               size={20}
-              className={`cursor-pointer ${reminder.is_completed ? "text-green-600" : "text-gray-400"}`}
-              onClick={() => onToggleCompleted(reminder.id, reminder.is_completed)}
+              className={`cursor-pointer ${
+                reminder.is_completed ? "text-green-600" : "text-gray-400"
+              }`}
+              onClick={() =>
+                onToggleCompleted(reminder.id, reminder.is_completed)
+              }
             />
 
             {reminder.is_urgent && (
@@ -110,11 +131,12 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
 
         {/* Fecha / hora */}
         <div className="flex flex-wrap gap-4 text-gray-500 text-sm items-center">
-
           {isRoutine ? (
             <div className="flex items-center gap-1 truncate">
               <Clock size={14} />
-              <span className="truncate">Rutina diaria: {reminder.times?.join(", ")}</span>
+              <span className="truncate">
+                Rutina diaria: {reminder.times?.join(", ")}
+              </span>
             </div>
           ) : (
             <>
@@ -129,35 +151,22 @@ export default function ReminderCard({ reminder, onDelete, onToggleCompleted }) 
               </div>
             </>
           )}
-
         </div>
       </div>
 
       {/* Modal */}
-      {showConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl p-6 w-80 shadow-lg">
-            <h4 className="font-bold mb-4">Confirmar eliminación</h4>
-            <p className="text-sm text-gray-600 mb-6">
-              ¿Eliminar "{getTitleFromDescription(reminder.title)}"?
-            </p>
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 rounded-xl border border-gray-300"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                className="px-4 py-2 rounded-xl bg-red-500 text-white"
-              >
-                Eliminar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        open={showConfirm}
+        title="Eliminar recordatorio"
+        message={`¿Eliminar "${getTitleFromDescription(reminder.title)}"?`}
+        mode="delete"
+        entity="recordatorio"
+        loading={false}
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </>
   );
 }

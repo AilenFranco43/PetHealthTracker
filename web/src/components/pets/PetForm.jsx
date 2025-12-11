@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Button from "../common/Button";
 
 const PetForm = ({
   pet,
@@ -13,8 +14,8 @@ const PetForm = ({
     breed: "",
     age: "",
     weight: "",
-    photo_url: "", // preview o URL existente
-    file: null, // archivo real
+    photo_url: "",
+    file: null,
   });
 
   const [hasChanges, setHasChanges] = useState(false);
@@ -221,22 +222,15 @@ const PetForm = ({
         >
           Cancelar
         </button>
-        <button
-          type="submit"
-          className="flex-1 px-4 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={loading || (mode === "edit" && !hasChanges)}
-        >
-          {loading ? (
-            <span className="flex items-center justify-center gap-2">
-              <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-              {mode === "create" ? "Creando..." : "Guardando..."}
-            </span>
-          ) : mode === "create" ? (
-            "Agregar mascota"
-          ) : (
-            "Guardar cambios"
-          )}
-        </button>
+
+        <Button
+          mode={mode}
+          entity="mascota"
+          loading={loading}
+          full={false}
+          className="flex-1"
+          disabled={mode === "edit" && !hasChanges}
+        />
       </div>
     </form>
   );
