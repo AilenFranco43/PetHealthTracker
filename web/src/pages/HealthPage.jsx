@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import TabNavigation from "../components/health/TabNavigation";
 import { Stethoscope, Plus } from "lucide-react";
-import HealthRecordFormModal from "../components/health/HealthRecordFormModal";
+import HealthRecordForm from "../components/health/HealthRecordForm";
+import Modal from "../components/common/Modal"; 
 import HealthRecordDetail from "./HealthRecordDetailPage";
 import { toast } from "react-hot-toast";
 import RecordCard from "../components/health/RecordCard";
@@ -174,15 +175,17 @@ const HealthPage = () => {
         )}
       </div>
 
-  <HealthRecordFormModal
+ <Modal
   open={showModal}
-  activeTab={activeTab}
   onClose={() => setShowModal(false)}
-  onSubmit={(newRecord) => {
-    handleNewRecord(newRecord);
-    setShowModal(false);
-  }}
-/>
+  className="max-w-2xl"
+>
+  <HealthRecordForm
+    mode="create"
+    onClose={() => setShowModal(false)}
+    onSuccess={handleNewRecord}
+  />
+</Modal>
 
       {showDetail && selectedRecord && (
         <HealthRecordDetail

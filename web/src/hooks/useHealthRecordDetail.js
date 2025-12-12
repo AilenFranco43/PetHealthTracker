@@ -56,6 +56,7 @@ export const useHealthRecordDetail = () => {
 
   return {
     record,
+    setRecord,
     config,
     loading,
     showDeleteConfirm,

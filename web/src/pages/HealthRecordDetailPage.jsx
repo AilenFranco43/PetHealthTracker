@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { AlertCircle, ChevronLeft } from "lucide-react";
 import { toast } from "react-hot-toast";
 import { useHealthRecordDetail } from "../hooks/useHealthRecordDetail";
+import { useHealthRecords } from "../hooks/useHealthRecords";
 import HealthRecordDetailSkeleton from "../components/health/HealthRecordDetailSkeleton";
 import PetInfoCard from "../components/health/PetInfoCard";
 import HealthInfoCard from "../components/health/HealthInfoCard";
@@ -10,8 +11,14 @@ import HealthRecordHeader from "../components/health/HealthRecordHeader";
 import DocumentList from "../components/health/DocumentList";
 import ActionSidebar from "../components/health/ActionSidebar";
 import ConfirmModal from "../components/common/ConfirmModal";
+import HealthRecordForm from "../components/health/HealthRecordForm";
+import Modal from "../components/common/Modal";
 
 const HealthRecordDetailPage = () => {
+  const [showEditModal, setShowEditModal] = useState(false);
+  const { updateHealthRecord, getHealthRecord, deleteHealthRecord } =
+    useHealthRecords();
+
   const {
     record,
     config,
@@ -24,11 +31,12 @@ const HealthRecordDetailPage = () => {
     formatHealthDate,
     formatPrintDate,
     getRelativeDate,
+    loadRecord,
   } = useHealthRecordDetail();
 
   const handlePrint = () => {
     if (!record) return;
-    
+
     const printWindow = window.open("", "_blank");
     printWindow.document.write(`
       <html>
@@ -92,11 +100,13 @@ const HealthRecordDetailPage = () => {
 
   const handleShare = async () => {
     if (!record || !navigator.share) return;
-    
+
     try {
       await navigator.share({
         title: `${record.type}: ${record.description}`,
-        text: `Registro de ${record.type.toLowerCase()} para ${record.pet?.name}`,
+        text: `Registro de ${record.type.toLowerCase()} para ${
+          record.pet?.name
+        }`,
         url: window.location.href,
       });
       toast.success("✅ Compartido correctamente");
@@ -108,15 +118,74 @@ const HealthRecordDetailPage = () => {
   };
 
   const handleEdit = () => {
-    toast("✏️ Función de edición disponible próximamente", {
-      icon: "🚀",
-      duration: 3000,
-    });
+    setShowEditModal(true);
+  };
+
+  const handleEditSuccess = (updatedRecord) => {
+    // Recargar los datos del servidor
+    loadRecord();
+    toast.success("✅ Registro actualizado correctamente");
+    setShowEditModal(false);
   };
 
   if (loading) {
     return <HealthRecordDetailSkeleton />;
   }
+
+  const handleAddDocument = async (file, customName) => {
+    console.log("Subiendo archivo:", file.name, file.size);
+    console.log("Custom name:", customName);
+    console.log("Documentos antes:", record?.document_urls);
+
+    if (!record) return;
+
+    try {
+      // IMPORTANTE: Si document_urls está vacío, NO lo incluyas en la data
+      const updateData = {
+        documents: [file], // Solo el archivo
+      };
+
+      // Solo agregar document_urls si hay documentos existentes
+      const existingDocs = record.document_urls || [];
+      if (existingDocs.length > 0) {
+        updateData.document_urls = existingDocs;
+      }
+
+      console.log("Enviando objeto:", updateData);
+      console.log("document_urls incluido?", "document_urls" in updateData);
+
+      const result = await updateHealthRecord(record.id, updateData);
+      console.log("Respuesta del servidor:", result);
+
+      loadRecord();
+      toast.success("✅ Documento subido correctamente");
+    } catch (error) {
+      console.error("Error completo:", error);
+      toast.error(`❌ Error: ${error.message}`);
+    }
+  };
+
+  const handleDeleteDocument = async (index) => {
+    if (!record) return;
+
+    try {
+      // Crear nueva lista sin el documento a eliminar
+      const updatedDocuments = [...record.document_urls];
+      updatedDocuments.splice(index, 1);
+
+      // Enviar solo la nueva lista de document_urls
+      await updateHealthRecord(record.id, {
+        document_urls: updatedDocuments,
+      });
+
+      // Recargar los datos
+      loadRecord();
+      toast.success("✅ Documento eliminado correctamente");
+    } catch (error) {
+      console.error("Error al eliminar documento:", error);
+      toast.error("❌ Error al eliminar documento");
+    }
+  };
 
   if (!record) {
     return (
@@ -161,15 +230,19 @@ const HealthRecordDetailPage = () => {
           {/* Columna izquierda - Información principal */}
           <div className="lg:col-span-2 space-y-6">
             <PetInfoCard pet={record.pet} />
-            
+
             <HealthInfoCard
               record={record}
               config={config}
               formatDate={formatHealthDate}
               getRelativeDate={getRelativeDate}
             />
-            
-            <DocumentList documents={record.document_urls} />
+
+            <DocumentList
+              documents={record.document_urls}
+              onAddDocument={handleAddDocument}
+              onDeleteDocument={handleDeleteDocument}
+            />
           </div>
 
           {/* Columna derecha - Acciones e información */}
@@ -202,6 +275,20 @@ const HealthRecordDetailPage = () => {
         onConfirm={handleDelete}
         onCancel={() => setShowDeleteConfirm(false)}
       />
+
+      {/* Modal de edición */}
+      <Modal
+        open={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        className="max-w-2xl"
+      >
+        <HealthRecordForm
+          record={record}
+          mode="edit"
+          onClose={() => setShowEditModal(false)}
+          onSuccess={handleEditSuccess}
+        />
+      </Modal>
     </div>
   );
 };

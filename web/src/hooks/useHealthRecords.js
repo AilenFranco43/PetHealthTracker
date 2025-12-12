@@ -29,7 +29,19 @@ export function useHealthRecords() {
   };
 
   const updateHealthRecord = async (id, data) => {
-    return await updateHealthRecordRequest(id, data);
+    setLoading(true);
+    try {
+      
+      const dataToSend = data || {};
+      console.log("updateHealthRecord - ID:", id, "Data:", dataToSend);
+      
+      return await updateHealthRecordRequest(id, dataToSend);
+    } catch (error) {
+      console.error("Error en updateHealthRecord:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deleteHealthRecord = async (id) => {

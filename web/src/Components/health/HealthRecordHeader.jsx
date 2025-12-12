@@ -4,19 +4,14 @@ import {
   Calendar, 
   PawPrint, 
   Clock, 
-  ArrowLeft, 
-  Edit, 
-  Printer, 
-  Share2 
+  ArrowLeft,
 } from "lucide-react";
 
 const HealthRecordHeader = ({ 
   record, 
   config, 
   formatShortDate, 
-  handleEdit, 
-  handlePrint, 
-  handleShare 
+
 }) => {
   // Validación de datos
   if (!record || !config) {
@@ -78,33 +73,7 @@ const HealthRecordHeader = ({
             </div>
           </div>
 
-          {/* Acciones */}
-          <div className="flex items-center gap-2 self-start lg:self-center">
-            <button 
-              onClick={handleEdit} 
-              className="p-3 hover:bg-white/15 rounded-xl transition-all group"
-              title="Editar"
-              aria-label="Editar registro"
-            >
-              <Edit className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
-            <button 
-              onClick={handlePrint} 
-              className="p-3 hover:bg-white/15 rounded-xl transition-all group"
-              title="Imprimir"
-              aria-label="Imprimir registro"
-            >
-              <Printer className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
-            <button 
-              onClick={handleShare} 
-              className="p-3 hover:bg-white/15 rounded-xl transition-all group"
-              title="Compartir"
-              aria-label="Compartir registro"
-            >
-              <Share2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            </button>
-          </div>
+    
         </div>
 
         {/* Indicador visual */}
