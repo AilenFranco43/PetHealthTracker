@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import Button from "../common/Button";
 import { useNutritionRecords } from "../../hooks/useNutritionRecords";
 
 export default function NutritionRecordForm({ pet, onClose }) {
   const { createRecord, loading } = useNutritionRecords();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
     food_type: "",
@@ -23,22 +25,53 @@ export default function NutritionRecordForm({ pet, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!pet?.id) return;
+    if (!pet?.id) {
+      toast.error("No se pudo identificar la mascota");
+      return;
+    }
+
+    
+    if (!form.food_type.trim()) {
+      toast.error("El tipo de alimento es obligatorio");
+      return;
+    }
+
+    if (!form.daily_meals) {
+      toast.error("Debes indicar cuántas comidas diarias");
+      return;
+    }
+
+    if (Number(form.daily_meals) <= 0) {
+      toast.error("Las comidas diarias deben ser mayor a 0");
+      return;
+    }
+
+    if (!form.portion_size.trim()) {
+      toast.error("El tamaño de la porción es obligatorio");
+      return;
+    }
 
     const payload = {
       pet_id: pet.id,
-      food_type: form.food_type,
-      food_brand: form.food_brand || undefined,
+      food_type: form.food_type.trim(),
+      food_brand: form.food_brand?.trim() || undefined,
       daily_meals: Number(form.daily_meals),
-      portion_size: form.portion_size,
-      notes: form.notes || undefined,
+      portion_size: form.portion_size.trim(),
+      notes: form.notes?.trim() || undefined,
     };
 
     try {
+      setIsSubmitting(true);
       await createRecord(payload);
+      toast.success("✅ Registro de nutrición guardado");
       onClose();
     } catch (error) {
       console.error(error);
+      toast.error(
+        error?.message || "Ocurrió un error al guardar el registro"
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -66,8 +99,10 @@ export default function NutritionRecordForm({ pet, onClose }) {
           onChange={handleChange}
           placeholder="Croquetas, BARF, comida casera..."
           required
+          disabled={loading || isSubmitting}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg
-            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]"
+            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]
+            disabled:opacity-50"
         />
       </div>
 
@@ -82,8 +117,10 @@ export default function NutritionRecordForm({ pet, onClose }) {
           value={form.food_brand}
           onChange={handleChange}
           placeholder="Royal Canin, Pro Plan..."
+          disabled={loading || isSubmitting}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg
-            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]"
+            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]
+            disabled:opacity-50"
         />
       </div>
 
@@ -100,8 +137,10 @@ export default function NutritionRecordForm({ pet, onClose }) {
           value={form.daily_meals}
           onChange={handleChange}
           required
+          disabled={loading || isSubmitting}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg
-            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]"
+            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]
+            disabled:opacity-50"
         />
       </div>
 
@@ -117,8 +156,10 @@ export default function NutritionRecordForm({ pet, onClose }) {
           onChange={handleChange}
           placeholder="200g, 1 taza, 1/2 lata"
           required
+          disabled={loading || isSubmitting}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg
-            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]"
+            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]
+            disabled:opacity-50"
         />
       </div>
 
@@ -133,8 +174,10 @@ export default function NutritionRecordForm({ pet, onClose }) {
           onChange={handleChange}
           rows={3}
           placeholder="Notas adicionales sobre la alimentación"
+          disabled={loading || isSubmitting}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none
-            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]"
+            focus:ring-2 focus:ring-[#0A99A5] focus:border-[#0A99A5]
+            disabled:opacity-50"
         />
       </div>
 
@@ -143,16 +186,18 @@ export default function NutritionRecordForm({ pet, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
-          disabled={loading}
+          disabled={loading || isSubmitting}
+          className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg
+            hover:bg-gray-50 transition font-medium disabled:opacity-50"
         >
           Cancelar
         </button>
+
         <Button
           mode="create"
           entity="registro"
           type="submit"
-          loading={loading}
+          loading={loading || isSubmitting}
         />
       </div>
     </form>
