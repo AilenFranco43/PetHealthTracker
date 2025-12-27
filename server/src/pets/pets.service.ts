@@ -44,6 +44,7 @@ export class PetsService {
         health_records: true,
         nutrition_records: true,
         reminders: true,
+        weight_records: true,
       },
     });
   }
@@ -56,6 +57,7 @@ export class PetsService {
         health_records: true,
         nutrition_records: true,
         reminders: true,
+        weight_records: true,
       },
     });
 
@@ -79,14 +81,20 @@ export class PetsService {
       photo_url = await this.cloudinaryService.uploadImage(file, 'pets');
     }
 
-    return await this.prisma.pet.update({
-      where: { id },
-      data: {
-        ...updatePetDto,
-        ...(photo_url && { photo_url }), // Solo actualiza si hay nueva imagen
-      },
-    });
-  }
+  return await this.prisma.pet.update({
+    where: { id },
+    data: {
+      ...updatePetDto,
+      ...(photo_url && { photo_url }),
+    },
+    include: {
+      health_records: true,
+      nutrition_records: true,
+      reminders: true,
+      weight_records: true,
+    },
+  });
+}
 
   // ---------------------- DELETE ----------------------
   async remove(id: string) {

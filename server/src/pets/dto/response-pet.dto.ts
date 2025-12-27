@@ -17,9 +17,6 @@ export class ResponsePetDto {
   breed: string;
 
   @ApiProperty()
-  weight: number;
-
-  @ApiProperty()
   birth_date: Date;
 
   @ApiProperty({ type: () => [Object], required: false })

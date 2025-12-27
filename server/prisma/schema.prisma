@@ -27,20 +27,22 @@ model User {
 }
 
 model Pet {
-  id                String            @id @default(uuid())
-  name              String
-  age               String?
-  weight            Float?
+  id   String  @id @default(uuid())
+  name String
+  age  String?
+
   specie            String
   breed             String?
   photo_url         String?
   owner_id          String
-  created_at        DateTime          @default(now())
-  updated_at        DateTime          @updatedAt
   health_records    HealthRecord[]
   nutrition_records NutritionRecord[]
   owner             User              @relation(fields: [owner_id], references: [id])
   reminders         Reminder[]
+  weight_records    WeightRecord[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model HealthRecord {
@@ -69,6 +71,15 @@ model NutritionRecord {
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
   pet          Pet      @relation(fields: [pet_id], references: [id])
+}
+
+model WeightRecord {
+  id          String   @id @default(uuid())
+  pet_id      String
+  weight      Float
+  recorded_at DateTime @default(now())
+
+  pet Pet @relation(fields: [pet_id], references: [id])
 }
 
 model Reminder {

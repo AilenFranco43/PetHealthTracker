@@ -9,7 +9,7 @@ import LandingPage from "./pages/LandingPage";
 import HealthPage from "./pages/HealthPage";
 import HealthRecordDetailPage from "./pages/HealthRecordDetailPage.jsx";
 import MainPage from "./pages/MainPage";
-import NutritionSection from "./pages/NutritionSection";
+import NutritionPage from "./pages/NutritionPage.jsx";
 import PetsSection from "./pages/PetsSection";
 import PetProfilePage from "./pages/PetProfilePage.jsx";
 import Reminders from "./pages/Reminders.jsx";
@@ -58,7 +58,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/health" element={<HealthPage />} />
             <Route path="/health/record/:id" element={<HealthRecordDetailPage />} />
-            <Route path="/nutrition" element={<NutritionSection />} />
+            <Route path="/nutrition" element={<NutritionPage />} />
             <Route path="/pets" element={<PetsSection />} />
             <Route path="/pets/:id" element={<PetProfilePage />} />
             <Route path="/reminders" element={<Reminders />} />

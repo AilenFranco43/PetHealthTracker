@@ -1,8 +1,15 @@
-import { IsString, IsOptional, IsNumber, IsUUID, IsUrl, Min, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  IsUUID,
+  IsUrl,
+  Min,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePetDto {
-  
   @ApiProperty({
     description: 'Nombre de la mascota',
     example: 'Luna',
@@ -19,15 +26,6 @@ export class CreatePetDto {
   @IsOptional()
   @IsString()
   age?: string;
-
-  @ApiProperty({
-    description: 'Peso de la mascota en kilogramos',
-    example: 12.5,
-    required: false,
-  })
-  @IsOptional()
-  @IsNumber()
-  weight?: number;
 
   @ApiProperty({
     description: 'Especie de la mascota (perro, gato, etc.)',
@@ -53,6 +51,4 @@ export class CreatePetDto {
   @IsOptional()
   @IsUrl()
   photo_url?: string;
-
-
 }

@@ -13,7 +13,6 @@ const PetForm = ({
     specie: "",
     breed: "",
     age: "",
-    weight: "",
     photo_url: "",
     file: null,
   });
@@ -27,7 +26,6 @@ const PetForm = ({
         specie: pet.specie || "",
         breed: pet.breed || "",
         age: pet.age || "",
-        weight: pet.weight ? pet.weight.toString() : "",
         photo_url: pet.photo_url || "",
         file: null,
       });
@@ -70,13 +68,6 @@ const PetForm = ({
     // Enviar siempre, aunque estén vacíos (para que el backend los reciba)
     formData.append("breed", form.breed || "");
     formData.append("age", form.age || "");
-
-    // Convertir weight a número
-    if (form.weight) {
-      formData.append("weight", parseFloat(form.weight));
-    } else {
-      formData.append("weight", "");
-    }
 
     if (form.file instanceof File) {
       formData.append("photo_url", form.file);
@@ -198,18 +189,6 @@ const PetForm = ({
           />
         </div>
 
-        <div className="flex flex-col">
-          <label className="font-medium mb-1">Peso (kg)</label>
-          <input
-            type="number"
-            name="weight"
-            className="border p-3 rounded-lg"
-            value={form.weight}
-            onChange={handleChange}
-            min="0"
-            step="0.1"
-          />
-        </div>
       </div>
 
       {/* BOTONES */}

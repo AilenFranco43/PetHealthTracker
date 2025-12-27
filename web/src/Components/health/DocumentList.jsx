@@ -9,7 +9,7 @@ import {
   Upload,
   Check,
 } from "lucide-react";
-import ConfirmModal from "../common/ConfirmModal"; // Asegúrate de importarlo
+import ConfirmModal from "../common/ConfirmModal";
 
 const DocumentList = ({
   documents,

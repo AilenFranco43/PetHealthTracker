@@ -13,11 +13,6 @@ export class UpdatePetDto {
   @ApiProperty({ required: false })
   age?: string;
 
-@IsOptional()
-@IsNumber() 
-@TransformType(() => Number)
-weight?: number;
-
 
   @IsOptional()
   @IsString()

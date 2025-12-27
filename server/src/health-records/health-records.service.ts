@@ -64,7 +64,6 @@ export class HealthRecordsService {
             specie: true,
             breed: true,
             age: true,
-            weight: true,
           },
         },
       },
@@ -126,7 +125,7 @@ export class HealthRecordsService {
             specie: true,
             breed: true,
             age: true,
-            weight: true,
+        
           },
         },
       },

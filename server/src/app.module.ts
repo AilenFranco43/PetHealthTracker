@@ -9,6 +9,7 @@ import { NutritionRecordsModule } from './nutrition-records/nutrition-records.mo
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { WeightRecordsModule } from './weight-records/weight-records.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     PrismaModule,
     AuthModule,
     CloudinaryModule,
+    WeightRecordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

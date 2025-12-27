@@ -1,12 +1,15 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateNutritionRecordDto } from './dto/create-nutrition-record.dto';
 import { UpdateNutritionRecordDto } from './dto/update-nutrition-record.dto';
 
 @Injectable()
 export class NutritionRecordsService {
-
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Crear un nuevo registro nutricional
@@ -14,60 +17,44 @@ export class NutritionRecordsService {
    * @returns Registro nutricional creado
    */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-async create(createNutritionRecordDto: CreateNutritionRecordDto) {
-  // 1️⃣ Validar que la mascota existe
-  const petExists = await this.prisma.pet.findUnique({
-    where: { id: createNutritionRecordDto.pet_id },
-  });
-
-  if (!petExists) {
-    throw new NotFoundException(`Mascota con ID ${createNutritionRecordDto.pet_id} no encontrada`);
-  }
-
-  // 2️⃣ Crear el registro nutricional
-  const nutritionRecord = await this.prisma.nutritionRecord.create({
-    data: createNutritionRecordDto,
-  });
-
-  // 3️⃣ Crear UN recordatorio de alimentación rutinaria
-  if (createNutritionRecordDto.meal_times && createNutritionRecordDto.meal_times.length > 0) {
-    await this.prisma.reminder.create({
-      data: {
-        pet_id: createNutritionRecordDto.pet_id,
-        title: 'Recordatorio de alimentación',
-        type: 'ALIMENTACION',
-        is_routine: true,
-        is_completed: false,
-        is_urgent: false,
-        // guardamos todos los horarios
-        times: createNutritionRecordDto.meal_times,
-
-      },
+  async create(createNutritionRecordDto: CreateNutritionRecordDto) {
+    // 1️⃣ Validar que la mascota existe
+    const petExists = await this.prisma.pet.findUnique({
+      where: { id: createNutritionRecordDto.pet_id },
     });
+
+    if (!petExists) {
+      throw new NotFoundException(
+        `Mascota con ID ${createNutritionRecordDto.pet_id} no encontrada`,
+      );
+    }
+
+    // 2️⃣ Crear el registro nutricional
+    const nutritionRecord = await this.prisma.nutritionRecord.create({
+      data: createNutritionRecordDto,
+    });
+
+    // 3️⃣ Crear UN recordatorio de alimentación rutinaria
+    if (
+      createNutritionRecordDto.meal_times &&
+      createNutritionRecordDto.meal_times.length > 0
+    ) {
+      await this.prisma.reminder.create({
+        data: {
+          pet_id: createNutritionRecordDto.pet_id,
+          title: 'Recordatorio de alimentación',
+          type: 'ALIMENTACION',
+          is_routine: true,
+          is_completed: false,
+          is_urgent: false,
+          // guardamos todos los horarios
+          times: createNutritionRecordDto.meal_times,
+        },
+      });
+    }
+
+    return nutritionRecord;
   }
-
-  return nutritionRecord;
-}
-
-
-
-
-
-
 
   /**
    * Obtener todos los registros nutricionales
@@ -115,7 +102,9 @@ async create(createNutritionRecordDto: CreateNutritionRecordDto) {
     });
 
     if (!record) {
-      throw new NotFoundException(`Registro nutricional con ID ${id} no encontrado`);
+      throw new NotFoundException(
+        `Registro nutricional con ID ${id} no encontrado`,
+      );
     }
 
     return record;
@@ -150,25 +139,27 @@ async create(createNutritionRecordDto: CreateNutritionRecordDto) {
    * @param updateNutritionRecordDto - Datos a actualizar
    * @returns Registro nutricional actualizado
    */
-async update(id: string, updateNutritionRecordDto: UpdateNutritionRecordDto) {
-  // Validar existencia
-  await this.findOne(id);
+  async update(id: string, updateNutritionRecordDto: UpdateNutritionRecordDto) {
+    // Validar existencia
+    await this.findOne(id);
 
-  // Validar nuevo pet_id si se actualiza
-  if (updateNutritionRecordDto.pet_id) {
-    const petExists = await this.prisma.pet.findUnique({
-      where: { id: updateNutritionRecordDto.pet_id },
+    // Validar nuevo pet_id si se actualiza
+    if (updateNutritionRecordDto.pet_id) {
+      const petExists = await this.prisma.pet.findUnique({
+        where: { id: updateNutritionRecordDto.pet_id },
+      });
+      if (!petExists)
+        throw new NotFoundException(
+          `Mascota con ID ${updateNutritionRecordDto.pet_id} no encontrada`,
+        );
+    }
+
+    // Actualizar campos, incluidos meal_times
+    return await this.prisma.nutritionRecord.update({
+      where: { id },
+      data: updateNutritionRecordDto,
     });
-    if (!petExists) throw new NotFoundException(`Mascota con ID ${updateNutritionRecordDto.pet_id} no encontrada`);
   }
-
-  // Actualizar campos, incluidos meal_times
-  return await this.prisma.nutritionRecord.update({
-    where: { id },
-    data: updateNutritionRecordDto,
-  });
-}
-
 
   /**
    * Eliminar un registro nutricional

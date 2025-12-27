@@ -1,13 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  Printer,
   Share2,
-  FileEdit,
   Bell,
   AlertCircle,
   ChevronLeft,
 } from "lucide-react";
+import Button from "../common/Button";
 
 const ActionSidebar = ({
   onEdit,
@@ -22,19 +21,19 @@ const ActionSidebar = ({
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-6">Acciones</h3>
         <div className="space-y-3">
-          <button
+          <Button
+            type="button"
+            mode="open"
+            entity="registro"
             onClick={onEdit}
-            className="w-full px-4 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all font-medium flex items-center justify-center gap-3 shadow-md hover:shadow-lg"
-          >
-            <FileEdit className="w-5 h-5" />
-            <span>Editar registro</span>
-          </button>
+            full
+          />
+
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={onPrint}
               className="px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 font-medium flex items-center justify-center gap-2 transition-all"
             >
-              <Printer className="w-5 h-5" />
               Imprimir
             </button>
             <button
@@ -88,12 +87,13 @@ const ActionSidebar = ({
               Esta acción eliminará permanentemente el registro y todos sus
               archivos adjuntos.
             </p>
-            <button
+            <Button
+              type="button"
+              mode="delete"
+              entity="registro"
               onClick={onDelete}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all font-medium text-sm"
-            >
-              Eliminar registro
-            </button>
+              full={false}
+            />
           </div>
         </div>
       </div>
