@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
-import { Clock } from 'lucide-react';
-import WeeklyChart from './WeeklyChart';
-import PetInfoCard from './PetInfoCard';
-import Modal from '../common/Modal';
-import NutritionRecordForm from './NutritionRecordForm';
-import { usePets } from '../../hooks/usePets';
-import { getWeightRecordsRequest } from '../../api/weightRecords';
-import { useNutritionRecords } from '../../hooks/useNutritionRecords';
+import { useState, useEffect } from "react";
+import { Clock } from "lucide-react";
+import WeeklyChart from "./WeeklyChart";
+import PetInfoCard from "./PetInfoCard";
+import Modal from "../common/Modal";
+import ConfirmModal from "../common/ConfirmModal";
+import NutritionRecordForm from "./NutritionRecordForm";
+import { usePets } from "../../hooks/usePets";
+import { getWeightRecordsRequest } from "../../api/weightRecords";
+import { useNutritionRecords } from "../../hooks/useNutritionRecords";
 
 export default function NutritionSection() {
   const { pets } = usePets();
@@ -15,26 +16,50 @@ export default function NutritionSection() {
   const [weights, setWeights] = useState([]);
   const [loadingWeights, setLoadingWeights] = useState(false);
   const [showNutritionForm, setShowNutritionForm] = useState(false);
-
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const {
     records: nutritionRecords,
     getRecords: getNutritionRecords,
+    deleteRecord,
   } = useNutritionRecords();
 
-  // 🔹 Seleccionar primera mascota
+  //ultimo registro nutricional
+  const latestNutritionRecord =
+    nutritionRecords.length > 0
+      ? nutritionRecords[nutritionRecords.length - 1]
+      : null;
+
+  //Borrar registro nutricional
+  const handleDeleteNutrition = async () => {
+    if (!latestNutritionRecord) return;
+
+    try {
+      setDeleting(true);
+      await deleteRecord(latestNutritionRecord.id);
+      setShowConfirm(false);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  // Seleccionar primera mascota
+
   useEffect(() => {
     if (pets.length > 0 && !selectedPet) {
       setSelectedPet(pets[0]);
     }
   }, [pets, selectedPet]);
 
-  // 🔹 Cargar nutrición
+  // cargar registros nutricionales
   useEffect(() => {
     if (!selectedPet) return;
     getNutritionRecords(selectedPet.id);
   }, [selectedPet]);
 
-  // 🔹 Cargar pesos
+  // cargar historial de pesos
   useEffect(() => {
     if (!selectedPet) return;
 
@@ -53,22 +78,11 @@ export default function NutritionSection() {
     loadWeights();
   }, [selectedPet]);
 
-  const latestNutritionRecord =
-    nutritionRecords.length > 0
-      ? nutritionRecords[nutritionRecords.length - 1]
-      : null;
-
-  /* =============================
-     🟢 SI NO HAY PET TODAVÍA
-     (EVITA PANTALLA BLANCA)
-     ============================= */
+  //pantalla blanca
   if (!selectedPet) {
     return <div className="max-w-7xl mx-auto p-4 lg:p-8 h-96" />;
   }
 
-  /* =============================
-     🟢 CONTENIDO REAL
-     ============================= */
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-8">
       {/* Header */}
@@ -97,6 +111,22 @@ export default function NutritionSection() {
           <PetInfoCard
             pet={selectedPet}
             nutritionRecord={latestNutritionRecord}
+            onRequestDelete={() => setShowConfirm(true)}
+          />
+
+          <ConfirmModal
+            open={showConfirm}
+            title="Eliminar información nutricional"
+            message="¿Estás seguro de que querés eliminar esta información?"
+            confirmText="Eliminar"
+            cancelText="Cancelar"
+            loading={deleting}
+            warningItems={[
+              "Se perderán los datos nutricionales",
+              "No podrás recuperarlos luego",
+            ]}
+            onConfirm={handleDeleteNutrition}
+            onCancel={() => setShowConfirm(false)}
           />
 
           <button
@@ -104,7 +134,11 @@ export default function NutritionSection() {
             className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl hover:shadow-lg transition-all flex items-center justify-center gap-2 font-medium"
           >
             <span className="text-2xl">+</span>
-            <span>Agregar registro de salud</span>
+            <span>
+              {latestNutritionRecord
+                ? "Actualizar registro de nutrición"
+                : "Agregar registro de nutrición"}
+            </span>
           </button>
         </div>
       </div>

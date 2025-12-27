@@ -1,10 +1,24 @@
+import { Trash } from "lucide-react";
+
 export default function PetInfoCard({
   pet,
   nutritionRecord,
   weightRecord,
+  onRequestDelete,
 }) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg">
+    <div className="bg-white rounded-2xl p-6 shadow-lg relative">
+      
+      {/* Botón eliminar */}
+      {nutritionRecord && (
+        <button
+          onClick={onRequestDelete}
+          className="absolute top-4 right-4 text-red-500 hover:text-red-700"
+        >
+          <Trash className="w-5 h-5" />
+        </button>
+      )}
+
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-1">
@@ -21,7 +35,8 @@ export default function PetInfoCard({
             {weightRecord.weight} kg
           </p>
           <p className="text-xs text-gray-400">
-            Registrado el {new Date(weightRecord.created_at).toLocaleDateString()}
+            Registrado el{" "}
+            {new Date(weightRecord.recorded_at).toLocaleDateString()}
           </p>
         </div>
       )}
@@ -46,18 +61,14 @@ export default function PetInfoCard({
           )}
 
           <div>
-            <p className="text-sm text-gray-500 mb-1">
-              Comidas diarias
-            </p>
+            <p className="text-sm text-gray-500 mb-1">Comidas diarias</p>
             <p className="text-gray-800 font-medium">
               {nutritionRecord.daily_meals}
             </p>
           </div>
 
           <div>
-            <p className="text-sm text-gray-500 mb-1">
-              Tamaño de porción
-            </p>
+            <p className="text-sm text-gray-500 mb-1">Tamaño de porción</p>
             <p className="text-gray-800 font-medium">
               {nutritionRecord.portion_size}
             </p>
@@ -66,9 +77,7 @@ export default function PetInfoCard({
           {nutritionRecord.notes && (
             <div>
               <p className="text-sm text-gray-500 mb-1">Observaciones</p>
-              <p className="text-gray-700">
-                {nutritionRecord.notes}
-              </p>
+              <p className="text-gray-700">{nutritionRecord.notes}</p>
             </div>
           )}
         </div>
