@@ -14,7 +14,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { createHash, randomBytes } from 'crypto';
 import { addMinutes, isAfter } from 'date-fns';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from 'src/email/email.service';
 import { ConfigService } from '@nestjs/config';
 import { User } from '@prisma/client';
