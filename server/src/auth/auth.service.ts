@@ -17,7 +17,6 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { EmailService } from 'src/email/email.service';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@prisma/client';
 import { CreateUserDto } from 'src/users/dto/create-user.dto'; // Esta importación está correcta
 
 @Injectable()

@@ -4,7 +4,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { CreateHealthRecordDto } from './dto/create-health-record.dto';
 import { UpdateHealthRecordDto } from './dto/update-health-record.dto';
-import { HealthRecordType } from '@prisma/client';
+
+type HealthRecordType = 'VACUNA' | 'CHEQUEO' | 'TRATAMIENTO';
 
 @Injectable()
 export class HealthRecordsService {
