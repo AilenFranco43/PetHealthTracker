@@ -15,9 +15,9 @@ import { createHash, randomBytes } from 'crypto';
 import { addMinutes, isAfter } from 'date-fns';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
 import { ConfigService } from '@nestjs/config';
-import { CreateUserDto } from 'src/users/dto/create-user.dto'; // Esta importación está correcta
+import { CreateUserDto } from '../users/dto/create-user.dto'; // Esta importación está correcta
 
 @Injectable()
 export class AuthService {

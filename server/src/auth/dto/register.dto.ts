@@ -1,7 +1,7 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
-import { Trim } from 'src/common/decorators/trim.decorator';
-import { IsFullName } from 'src/common/validators/is-full-name.validator';
-import { IsStrongPassword } from 'src/common/validators/is-strong-password.validator';
+import { Trim } from '../../common/decorators/trim.decorator';
+import { IsFullName } from '../../common/validators/is-full-name.validator';
+import { IsStrongPassword } from '../../common/validators/is-strong-password.validator';
 
 export class RegisterDto {
   @IsNotEmpty()
