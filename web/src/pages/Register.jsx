@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaHeart, FaEnvelope, FaLock, FaUser } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import InputForm from "../Components/InputForm";
+import InputForm from "../components/InputForm";
 import { useAuth } from "../hooks/useAuth";
 
 const Register = () => {

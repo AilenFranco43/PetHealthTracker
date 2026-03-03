@@ -1,4 +1,3 @@
-// components/common/Modal.jsx
 import { X } from "lucide-react";
 
 export default function Modal({

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaHeart, FaEnvelope, FaLock } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import InputForm from "../Components/InputForm";
+import InputForm from "../components/InputForm";
 import { Link } from "react-router-dom";
 import { loginRequest } from "../api/auth";
 import { useNavigate } from "react-router-dom";
