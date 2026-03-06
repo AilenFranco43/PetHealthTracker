@@ -78,14 +78,25 @@ El proyecto sigue una **arquitectura modular** utilizando **NestJS**, separando 
 
 Este proyecto fue desarrollado de forma colaborativa por el siguiente equipo:
 
-- **Ailén Franco** – Full Stack Developer  
-  https://github.com/AilenFranco43
+- **Ailén Franco** - Developer
+  [GitHub](https://github.com/AilenFranco43)
 
-- Kr1014 – https://github.com/Kr1014
-- joss-dev – https://github.com/joss-dev
-- valencastrillon – https://github.com/valencastrillon
-- Lourdes69 – https://github.com/Lourdes69
-- diegos20000 – https://github.com/diegos20000
-- joel12sa – https://github.com/joel12sa
+- **Kr1014** - Developer 
+  [GitHub](https://github.com/Kr1014)
+
+- **joss-dev** - Developer  
+  [GitHub](https://github.com/joss-dev)
+
+- **valencastrillon** - Developer  
+  [GitHub](https://github.com/valencastrillon)
+
+- **Lourdes69** - Developer  
+  [GitHub](https://github.com/Lourdes69)
+
+- **diegos20000** - Developer  
+  [GitHub](https://github.com/diegos20000)
+
+- **joel12sa** - Developer  
+  [GitHub](https://github.com/joel12sa)
 
 Durante el desarrollo del proyecto se utilizó **Git y GitHub para el control de versiones**, permitiendo la colaboración y organización del trabajo del equipo.
