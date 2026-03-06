@@ -71,3 +71,21 @@ Las imágenes de mascotas se almacenan utilizando **Cloudinary**, permitiendo un
 # 🏗 Arquitectura
 
 El proyecto sigue una **arquitectura modular** utilizando **NestJS**, separando responsabilidades para mejorar la mantenibilidad y escalabilidad del sistema.
+
+---
+
+# 👥 Equipo de desarrollo
+
+Este proyecto fue desarrollado de forma colaborativa por el siguiente equipo:
+
+- **Ailén Franco** – Full Stack Developer  
+- Kr1014 – Developer  
+- joss-dev – Developer  
+- valencastrillon – Developer  
+- Lourdes69 – Developer  
+- diegos20000 – Developer  
+- joel12sa – Developer  
+
+Durante el desarrollo del proyecto se trabajó utilizando **Git y GitHub para control de versiones**, organizando el trabajo mediante commits y colaboración en equipo.
+
+Según el historial del repositorio, se realizaron más de **80 commits**, con contribuciones activas del equipo a lo largo del desarrollo.
