@@ -8,8 +8,6 @@ const Banner = () => {
         <section className="pt-24 sm:pt-32 pb-12 sm:pb-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-cyan-50 via-blue-50 to-teal-50 relative overflow-hidden">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
-
-
                     <div className="w-full lg:w-1/2 flex flex-col  items-start text-left sm:items-center sm:text-center leading-10  z-10">
                         <div className='text-start '>
                             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-gray-900 mb-4 sm:mb-6 leading-tight">
