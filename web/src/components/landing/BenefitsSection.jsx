@@ -18,7 +18,7 @@ export default function BenefitsSection() {
         {/* Imagen */}
         <div className="order-2 lg:order-1 flex justify-center">
           <img
-            src="/public/img-beneficios.jpg"
+            src="../../../public/img-beneficios.jpg"
             alt="Beneficios mascotas"
             className="rounded-3xl shadow-2xl h-[600px] max-w-[450px] object-cover"
           />
