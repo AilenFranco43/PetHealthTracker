@@ -1,7 +1,7 @@
 import React from "react";
 import BenefitItem from "../Beneficios/BenefitItem";
 import { FaShieldAlt } from "react-icons/fa";
-import imgBenefits from "/public/img-beneficios.jpg";
+import imgBenefits from "../../../public/img-beneficios.jpg";
 
 export default function BenefitsSection() {
   const benefits = [
