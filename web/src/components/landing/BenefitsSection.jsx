@@ -1,6 +1,7 @@
+import React from "react";
 import BenefitItem from "../Beneficios/BenefitItem";
 import { FaShieldAlt } from "react-icons/fa";
-
+import imgBenefits from "/public/img-beneficios.jpg";
 
 export default function BenefitsSection() {
   const benefits = [
@@ -18,7 +19,7 @@ export default function BenefitsSection() {
         {/* Imagen */}
         <div className="order-2 lg:order-1 flex justify-center">
           <img
-            src="../../../public/img-beneficios.jpg"
+            src={imgBenefits}
             alt="Beneficios mascotas"
             className="rounded-3xl shadow-2xl h-[600px] max-w-[450px] object-cover"
           />
