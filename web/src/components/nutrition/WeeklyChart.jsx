@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -7,7 +7,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
+} from "recharts";
 
 export default function WeeklyChart({
   pets = [],
@@ -18,32 +18,33 @@ export default function WeeklyChart({
 }) {
   if (!selectedPet) return null;
 
-const chartData = weights.map((record) => ({
-  date: new Date(record.recorded_at).toLocaleDateString('es-AR'),
-  weight: record.weight,
-}));
+  // Ordenar registros de más antiguo a más reciente
+  const sortedWeights = [...weights].sort(
+    (a, b) => new Date(a.recorded_at) - new Date(b.recorded_at)
+  );
+
+  const chartData = sortedWeights.map((record) => ({
+    date: new Date(record.recorded_at).toLocaleDateString("es-AR"),
+    weight: record.weight,
+  }));
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-lg">
       <div className="flex items-center gap-2 mb-6">
         <TrendingUp className="w-5 h-5 text-[#0A99A5]" />
-        <h2 className="text-lg font-semibold">
-          Evolución de peso
-        </h2>
+        <h2 className="text-lg font-semibold">Evolución de peso</h2>
       </div>
 
       {loading ? (
         <p className="text-gray-400 text-center">Cargando pesos...</p>
       ) : chartData.length === 0 ? (
-        <p className="text-gray-400 text-center">
-          No hay registros de peso
-        </p>
+        <p className="text-gray-400 text-center">No hay registros de peso</p>
       ) : (
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
-            <YAxis domain={['auto', 'auto']} />
+            <YAxis domain={["auto", "auto"]} />
             <Tooltip />
             <Line
               type="monotone"
@@ -58,9 +59,7 @@ const chartData = weights.map((record) => ({
 
       {/* Selector mascota */}
       <div className="mt-6 border-t pt-4">
-        <p className="text-sm text-gray-500 mb-3">
-          Seleccioná una mascota:
-        </p>
+        <p className="text-sm text-gray-500 mb-3">Seleccioná una mascota:</p>
 
         {pets.map((pet) => (
           <button
@@ -68,8 +67,8 @@ const chartData = weights.map((record) => ({
             onClick={() => onSelectPet(pet)}
             className={`w-full px-4 py-3 rounded-xl mb-2 ${
               selectedPet.id === pet.id
-                ? 'bg-[#0A99A5]/10 border border-[#0A99A5]'
-                : 'bg-gray-50'
+                ? "bg-[#0A99A5]/10 border border-[#0A99A5]"
+                : "bg-gray-50"
             }`}
           >
             {pet.name}

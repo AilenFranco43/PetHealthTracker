@@ -5,7 +5,7 @@ export default function Modal({
   onClose,
   children,
   className = "",
-  hideClose = false, // por si algún modal no quiere botón de cerrar
+  hideClose = false,
 }) {
   if (!open) return null;
 

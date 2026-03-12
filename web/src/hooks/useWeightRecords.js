@@ -29,6 +29,7 @@ export function useWeightRecords() {
       return newWeight;
     } catch (err) {
       setError("Error al guardar peso");
+      throw err;
     } finally {
       setLoading(false);
     }

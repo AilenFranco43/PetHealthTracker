@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import Button from "../common/Button";
 import { useNutritionRecords } from "../../hooks/useNutritionRecords";
 
-export default function NutritionRecordForm({ pet, onClose }) {
+export default function NutritionRecordForm({ pet, onClose, onSaved }) {
   const { createRecord, loading } = useNutritionRecords();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -30,7 +30,6 @@ export default function NutritionRecordForm({ pet, onClose }) {
       return;
     }
 
-    
     if (!form.food_type.trim()) {
       toast.error("El tipo de alimento es obligatorio");
       return;
@@ -63,13 +62,14 @@ export default function NutritionRecordForm({ pet, onClose }) {
     try {
       setIsSubmitting(true);
       await createRecord(payload);
+      if (onSaved) {
+        await onSaved(pet.id);
+      }
       toast.success("✅ Registro de nutrición guardado");
       onClose();
     } catch (error) {
       console.error(error);
-      toast.error(
-        error?.message || "Ocurrió un error al guardar el registro"
-      );
+      toast.error(error?.message || "Ocurrió un error al guardar el registro");
     } finally {
       setIsSubmitting(false);
     }
