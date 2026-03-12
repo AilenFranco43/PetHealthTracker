@@ -18,31 +18,41 @@ const Dashboard = () => {
   const { getReminders } = useReminders();
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
+  const [urgentCount, setUrgentCount] = useState(0);
 
   useEffect(() => {
     getPets();
   }, []);
 
+
   useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const allReminders = await getReminders();
+  const fetchEvents = async () => {
+    try {
+      const allReminders = await getReminders();
 
-        const upcoming = allReminders
-          .filter((r) => !r.is_completed && r.date)
-          .sort((a, b) => new Date(a.date) - new Date(b.date))
-          .slice(0, 3);
+      const upcoming = allReminders
+        .filter((r) => !r.is_completed && r.date)
+        .sort((a, b) => new Date(a.date) - new Date(b.date))
+        .slice(0, 3);
 
-        setUpcomingEvents(upcoming);
-      } catch (error) {
-        console.error("Error cargando próximos eventos", error);
-      } finally {
-        setLoadingEvents(false);
-      }
-    };
+      setUpcomingEvents(upcoming);
 
-    fetchEvents();
-  }, []);
+      //contar urgentes
+      const urgent = allReminders.filter(
+        (r) => r.is_urgent && !r.is_completed
+      );
+
+      setUrgentCount(urgent.length);
+
+    } catch (error) {
+      console.error("Error cargando próximos eventos", error);
+    } finally {
+      setLoadingEvents(false);
+    }
+  };
+
+  fetchEvents();
+}, []);
 
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gray-50">
@@ -66,17 +76,17 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center rounded-2xl bg-[#33BC9C] p-6 shadow-lg">
               <FaHeart className="h-6 w-6 mb-4 text-white" />
               <div className="font-poppins text-3xl font-bold text-white">
-                2/2
+                {loading ? "..." : `${pets.length}`}
               </div>
               <div className="font-poppins text-sm text-white/80">
-                Vacunas al día
+                Mascotas registradas
               </div>
             </div>
 
             <div className="flex flex-col items-center justify-center rounded-2xl bg-[#33BC9C] p-6 shadow-lg">
               <FaCalendarAlt className="h-6 w-6 mb-4 text-white" />
               <div className="font-poppins text-3xl font-bold text-white">
-                3
+                {loadingEvents ? "..." : `${upcomingEvents.length}`}
               </div>
               <div className="font-poppins text-sm text-white/80">
                 Próximas citas
@@ -86,10 +96,10 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center rounded-2xl bg-[#33BC9C] p-6 shadow-lg">
               <FaExclamationTriangle className="h-6 w-6 mb-4 text-white" />
               <div className="font-poppins text-3xl font-bold text-white">
-                1
+                {loadingEvents ? "..." : urgentCount}
               </div>
               <div className="font-poppins text-sm text-white/80">
-                Alertas activas
+                Recordatorios urgentes
               </div>
             </div>
           </div>
