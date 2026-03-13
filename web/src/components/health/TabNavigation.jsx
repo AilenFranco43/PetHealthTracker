@@ -8,7 +8,7 @@ const TabNavigation = ({ activeTab, setActiveTab }) => {
   ];
 
   return (
-    <div className="bg-gray-200 rounded-xl p-1 mb-6 flex gap-1">
+    <div className="bg-gray-200 rounded-xl p-1 mb-6 flex flex-col lg:flex-row gap-1">
       {tabs.map((tab) => (
         <button
           key={tab.id}

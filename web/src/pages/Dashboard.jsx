@@ -24,42 +24,40 @@ const Dashboard = () => {
     getPets();
   }, []);
 
-
   useEffect(() => {
-  const fetchEvents = async () => {
-    try {
-      const allReminders = await getReminders();
+    const fetchEvents = async () => {
+      try {
+        const allReminders = await getReminders();
 
-      const upcoming = allReminders
-        .filter((r) => !r.is_completed && r.date)
-        .sort((a, b) => new Date(a.date) - new Date(b.date))
-        .slice(0, 3);
+        const upcoming = allReminders
+          .filter((r) => !r.is_completed && r.date)
+          .sort((a, b) => new Date(a.date) - new Date(b.date))
+          .slice(0, 3);
 
-      setUpcomingEvents(upcoming);
+        setUpcomingEvents(upcoming);
 
-      //contar urgentes
-      const urgent = allReminders.filter(
-        (r) => r.is_urgent && !r.is_completed
-      );
+        //contar urgentes
+        const urgent = allReminders.filter(
+          (r) => r.is_urgent && !r.is_completed,
+        );
 
-      setUrgentCount(urgent.length);
+        setUrgentCount(urgent.length);
+      } catch (error) {
+        console.error("Error cargando próximos eventos", error);
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
 
-    } catch (error) {
-      console.error("Error cargando próximos eventos", error);
-    } finally {
-      setLoadingEvents(false);
-    }
-  };
-
-  fetchEvents();
-}, []);
+    fetchEvents();
+  }, []);
 
   return (
     <div className="w-full min-h-screen flex flex-col md:flex-row bg-gray-50">
-      <div className="flex-1 p-4">
+      <div className="flex-1 p-4 mt-14 lg:mt-0">
         {/* Header Gradient */}
         <div className="relative p-6 md:p-8 w-full max-w-full min-h-[280px] md:h-[300px] rounded-3xl bg-gradient-to-r from-[#00BA7D] to-[#00BFA5] shadow-xl">
-          <button className="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white transition hover:bg-white/30">
+          <button className="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20 text-white transition hover:bg-white/30">
             <FaHeart className="h-5 w-5" />
           </button>
 
@@ -140,7 +138,7 @@ const Dashboard = () => {
           </div>
 
           {/* Próximos eventos */}
-          <div className="col-span-1 p-5">
+          <div className="col-span-1 lg:p-5">
             <h3 className="pl-4 text-xl font-medium">Próximos eventos</h3>
             {loadingEvents ? (
               <UpcomingEventsSkeleton />

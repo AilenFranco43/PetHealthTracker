@@ -1,21 +1,20 @@
 import { useState, useEffect } from "react";
-import { Clock } from "lucide-react";
+
 import WeeklyChart from "./WeeklyChart";
 import PetInfoCard from "./PetInfoCard";
 import Modal from "../common/Modal";
 import ConfirmModal from "../common/ConfirmModal";
 import NutritionRecordForm from "./NutritionRecordForm";
-import { usePets } from "../../hooks/usePets";
-import { getWeightRecordsRequest } from "../../api/weightRecords";
-import { useNutritionRecords } from "../../hooks/useNutritionRecords";
 import WeightRecordForm from "./WeightRecordForm";
 
-export default function NutritionSection() {
-  const { pets } = usePets();
+import { getWeightRecordsRequest } from "../../api/weightRecords";
+import { useNutritionRecords } from "../../hooks/useNutritionRecords";
 
+export default function NutritionSection({ pets }) {
   const [selectedPet, setSelectedPet] = useState(null);
   const [weights, setWeights] = useState([]);
-  const [loadingWeights, setLoadingWeights] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+
   const [showNutritionForm, setShowNutritionForm] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [showWeightForm, setShowWeightForm] = useState(false);
@@ -32,6 +31,37 @@ export default function NutritionSection() {
       ? nutritionRecords[nutritionRecords.length - 1]
       : null;
 
+  const loadData = async (petId) => {
+    try {
+      setLoadingData(true);
+
+      const [weightsData] = await Promise.all([
+        getWeightRecordsRequest(petId),
+        getNutritionRecords(petId),
+      ]);
+
+      setWeights(weightsData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  useEffect(() => {
+    if (pets.length === 0) return;
+
+    const firstPet = pets[0];
+    setSelectedPet(firstPet);
+
+    loadData(firstPet.id);
+  }, [pets]);
+
+  const handleSelectPet = async (pet) => {
+    setSelectedPet(pet);
+    loadData(pet.id);
+  };
+
   const handleDeleteNutrition = async () => {
     if (!latestNutritionRecord) return;
 
@@ -46,64 +76,26 @@ export default function NutritionSection() {
     }
   };
 
-  // seleccionar primera mascota
-  useEffect(() => {
-    if (pets.length > 0 && !selectedPet) {
-      setSelectedPet(pets[0]);
-    }
-  }, [pets, selectedPet]);
-
-  // cargar registros nutricionales
-  useEffect(() => {
-    if (!selectedPet) return;
-    getNutritionRecords(selectedPet.id);
-  }, [selectedPet]);
-
-  // función para cargar pesos
   const loadWeights = async (petId) => {
     try {
-      setLoadingWeights(true);
       const data = await getWeightRecordsRequest(petId);
       setWeights(data);
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoadingWeights(false);
     }
   };
 
-  // cargar historial de pesos
-  useEffect(() => {
-    if (!selectedPet) return;
-    loadWeights(selectedPet.id);
-  }, [selectedPet]);
-
-  if (!selectedPet) {
-    return <div className="max-w-7xl mx-auto p-4 lg:p-8 h-96" />;
-  }
+  if (!selectedPet) return null;
 
   return (
     <div className="max-w-7xl mx-auto p-4 lg:p-8">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl p-6 lg:p-8 mb-6 text-white shadow-xl">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl lg:text-3xl font-bold mb-1">Nutrición</h1>
-            <p className="text-purple-100">Plan de alimentación</p>
-          </div>
-          <div className="w-12 h-12 lg:w-16 lg:h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
-            <Clock className="w-6 h-6 lg:w-8 lg:h-8" />
-          </div>
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <WeeklyChart
           pets={pets}
           selectedPet={selectedPet}
-          onSelectPet={setSelectedPet}
+          onSelectPet={handleSelectPet}
           weights={weights}
-          loading={loadingWeights}
+          loading={loadingData}
         />
 
         <div className="space-y-6">
@@ -128,32 +120,52 @@ export default function NutritionSection() {
             onCancel={() => setShowConfirm(false)}
           />
 
-          <button
-            onClick={() => setShowNutritionForm(true)}
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-4 rounded-2xl hover:shadow-lg transition-all flex items-center justify-center gap-2 font-medium"
-          >
-            <span className="text-2xl">+</span>
-            <span>
-              {latestNutritionRecord
-                ? "Actualizar registro de nutrición"
-                : "Agregar registro de nutrición"}
-            </span>
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowNutritionForm(true)}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 
+    text-white py-4 rounded-2xl 
+    flex items-center justify-center gap-3 
+    font-medium text-sm
+    shadow-md hover:shadow-xl
+    hover:scale-[1.02] active:scale-[0.98]
+    transition-all duration-200"
+            >
+              {latestNutritionRecord ? (
+                "Actualizar registro de nutrición"
+              ) : (
+                <>
+                  <span className="text-xl">+</span> Agregar
+                  registro de nutrición
+                </>
+              )}
+            </button>
 
-          <button
-            onClick={() => setShowWeightForm(true)}
-            className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-4 rounded-2xl hover:shadow-lg transition-all flex items-center justify-center gap-2 font-medium"
-          >
-            + Agregar registro de peso
-          </button>
+            <button
+              onClick={() => setShowWeightForm(true)}
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 
+    text-white py-4 rounded-2xl 
+    flex items-center justify-center gap-3 
+    font-medium text-sm
+    shadow-md hover:shadow-xl
+    hover:scale-[1.02] active:scale-[0.98]
+    transition-all duration-200"
+            >
+              <span className="text-xl">+</span>
+              Agregar registro de peso
+            </button>
+          </div>
         </div>
       </div>
 
-      <Modal open={showNutritionForm} onClose={() => setShowNutritionForm(false)}>
+      <Modal
+        open={showNutritionForm}
+        onClose={() => setShowNutritionForm(false)}
+      >
         <NutritionRecordForm
           pet={selectedPet}
           onClose={() => setShowNutritionForm(false)}
-          onSaved={getNutritionRecords}
+          onSaved={() => getNutritionRecords(selectedPet.id)}
         />
       </Modal>
 
@@ -161,7 +173,7 @@ export default function NutritionSection() {
         <WeightRecordForm
           pet={selectedPet}
           onClose={() => setShowWeightForm(false)}
-          onSaved={loadWeights}
+          onSaved={() => loadWeights(selectedPet.id)}
         />
       </Modal>
     </div>

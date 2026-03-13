@@ -88,21 +88,21 @@ const Reminders = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 mt-14 lg:mt-0">
       {/* Header */}
-      <header className="bg-gradient-to-r from-orange-400 to-red-500 rounded-3xl text-white p-6 pt-8 shadow-lg relative z-10">
-        <div className="flex justify-between items-start mb-4">
+      <header className="bg-gradient-to-r from-orange-400 to-red-500 rounded-3xl p-6 lg:p-8 mb-6 text-white shadow-xl">
+        <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-3xl lg:text-4xl font-bold mb-2">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-2">
               Recordatorios
-            </h1>
+            </h2>
             <p className="text-orange-100 text-base lg:text-lg">
               Próximas citas y eventos
             </p>
           </div>
 
-          <div className="bg-white/20 backdrop-blur-sm p-3 rounded-2xl shadow-sm">
-            <Bell className="text-white text-xl" />
+          <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center lg:w-16 lg:h-16 lg:rounded-3xl">
+            <Bell className="w-6 h-6 lg:w-6 lg:h-8" />
           </div>
         </div>
       </header>

@@ -4,6 +4,7 @@ import AddPetBtn from "../components/pets/AddPetBtn";
 import Modal from "../components/pets/Modal";
 import PetForm from "../components/pets/PetForm";
 import { Search } from "lucide-react";
+import { PawPrint } from "lucide-react";
 
 import PetProfilePage from "./PetProfilePage";
 import SkeletonPetCard from "../components/pets/SkeletonPetCard";
@@ -65,37 +66,47 @@ const PetsSection = () => {
     (pet) =>
       pet.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       pet.breed?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pet.specie?.toLowerCase().includes(searchQuery.toLowerCase())
+      pet.specie?.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 mt-14 lg:mt-0">
       {/* HEADER */}
-      <div className="mb-6 text-white bg-gradient-to-br from-emerald-500 to-teal-600 p-4 md:p-6 lg:p-8 rounded-2xl lg:rounded-3xl">
-        <div className="flex flex-col gap-4">
-          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold">
-            Mis mascotas
-          </h1>
+      <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 lg:p-8 mb-6 text-white shadow-xl">
+        <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-4 md:w-full">
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-2">
+                Mis mascotas
+              </h2>
+              <p className="text-emerald-100 text-base lg:text-lg">
+                Gestiona la información de tus mascotas
+              </p>
+            </div>
 
-          {/* SEARCH */}
-          <div className="relative w-full max-w-full sm:max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-200" />
-            <input
-              type="text"
-              placeholder="Buscar por nombre, raza o especie..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="
+            {/* SEARCH */}
+            <div className="relative w-full max-w-full sm:max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-200" />
+              <input
+                type="text"
+                placeholder="Buscar por nombre, raza o especie..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="
                 w-full pl-10 py-2 bg-white/20 backdrop-blur-lg border-0 
                 text-white placeholder:text-emerald-100 rounded-xl 
                 outline-none text-sm md:text-base"
-            />
-            {searchQuery && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-100 bg-emerald-600/30 px-2 py-1 rounded">
-                {filteredPets.length} resultado
-                {filteredPets.length !== 1 ? "s" : ""}
-              </div>
-            )}
+              />
+              {searchQuery && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-emerald-100 bg-emerald-600/30 px-2 py-1 rounded">
+                  {filteredPets.length} resultado
+                  {filteredPets.length !== 1 ? "s" : ""}
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="w-12 h-12 bg-white/20 backdrop-blur rounded-2xl flex items-center justify-center lg:w-16 lg:h-16 lg:rounded-3xl">
+            <PawPrint className="w-6 h-6 lg:w-6 lg:h-8" />
           </div>
         </div>
       </div>

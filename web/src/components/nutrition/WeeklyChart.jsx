@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { TrendingUp } from "lucide-react";
 import {
   LineChart,
@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function WeeklyChart({
+function WeeklyChart({
   pets = [],
   selectedPet,
   onSelectPet,
@@ -19,25 +19,29 @@ export default function WeeklyChart({
 }) {
   if (!selectedPet) return null;
 
-  const chartData = useMemo(() => {
+  const { chartData, currentWeight } = useMemo(() => {
     const sorted = [...weights].sort(
       (a, b) => new Date(a.recorded_at) - new Date(b.recorded_at)
     );
 
-    return sorted.map((record) => ({
+    const formatted = sorted.map((record) => ({
       date: new Date(record.recorded_at).toLocaleDateString("es-AR", {
         day: "2-digit",
         month: "2-digit",
       }),
       weight: record.weight,
     }));
+
+    return {
+      chartData: formatted,
+      currentWeight:
+        formatted.length > 0 ? formatted[formatted.length - 1].weight : null,
+    };
   }, [weights]);
 
-  const currentWeight =
-    chartData.length > 0 ? chartData[chartData.length - 1].weight : null;
-
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg">
+    <div className="bg-white rounded-2xl p-4 shadow-lg max-h-[90vh] lg:p-6 ">
+      
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
@@ -45,11 +49,11 @@ export default function WeeklyChart({
           <h2 className="text-lg font-semibold">Evolución de peso</h2>
         </div>
 
-        {currentWeight && (
+        {currentWeight !== null && (
           <div className="text-right">
             <p className="text-xs text-gray-400">Peso actual</p>
             <p className="text-lg font-semibold text-[#0A99A5]">
-              {currentWeight} kg
+              {loading ? "..." : currentWeight} kg
             </p>
           </div>
         )}
@@ -57,10 +61,12 @@ export default function WeeklyChart({
 
       {/* Chart */}
       {loading ? (
-        <p className="text-gray-400 text-center">Cargando pesos...</p>
+        <div className="h-[250px] flex items-center justify-center text-gray-400">
+          Cargando pesos...
+        </div>
       ) : chartData.length === 0 ? (
         <p className="text-gray-400 text-center">
-          Todavía no hay registros de peso para {selectedPet.name}
+          Todavía no hay registros de peso para <b>{selectedPet.name}</b>
         </p>
       ) : (
         <ResponsiveContainer width="100%" height={250}>
@@ -101,21 +107,29 @@ export default function WeeklyChart({
       <div className="mt-6 border-t pt-4">
         <p className="text-sm text-gray-500 mb-3">Seleccioná una mascota:</p>
 
-        {pets.map((pet) => (
-          <button
-            key={pet.id}
-            aria-label={`Seleccionar mascota ${pet.name}`}
-            onClick={() => onSelectPet(pet)}
-            className={`w-full px-4 py-3 rounded-xl mb-2 transition ${
-              selectedPet.id === pet.id
-                ? "bg-[#0A99A5]/10 border border-[#0A99A5]"
-                : "bg-gray-50 hover:bg-gray-100"
-            }`}
-          >
-            {pet.name}
-          </button>
-        ))}
+        <div className="space-y-2">
+          {pets.map((pet) => {
+            const isSelected = selectedPet.id === pet.id;
+
+            return (
+              <button
+                key={pet.id}
+                aria-label={`Seleccionar mascota ${pet.name}`}
+                onClick={() => onSelectPet(pet)}
+                className={`w-full px-4 py-3 rounded-xl transition ${
+                  isSelected
+                    ? "bg-[#0A99A5]/10 border border-[#0A99A5]"
+                    : "bg-gray-50 hover:bg-gray-100"
+                }`}
+              >
+                {pet.name}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 }
+
+export default memo(WeeklyChart);
