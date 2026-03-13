@@ -123,7 +123,7 @@ const PetsSection = () => {
       </div>
 
       {/* PETS GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-2 md:px-6 lg:px-10">
+      <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4 px-2 md:px-6 lg:px-10">
         {loading ? (
           // Mostrar skeletons mientras carga
           Array.from({ length: 6 }).map((_, i) => <SkeletonPetCard key={i} />)
