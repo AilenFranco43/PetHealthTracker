@@ -29,7 +29,21 @@ export default function NutritionPage() {
         </div>
       </div>
 
-      {loading ? <NutritionPageSkeleton /> : <NutritionSection pets={pets} />}
+      {loading ? (
+        <NutritionPageSkeleton />
+      ) : pets.length === 0 ? (
+        <div className="bg-white rounded-2xl p-6 text-center shadow">
+          <h3 className="text-xl font-semibold mb-2">
+            No tenés mascotas registradas
+          </h3>
+          <p className="text-gray-500">
+            Para poder agregar registros de nutrición primero necesitás
+            registrar una mascota.
+          </p>
+        </div>
+      ) : (
+        <NutritionSection pets={pets} />
+      )}
     </div>
   );
 }
